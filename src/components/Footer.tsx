@@ -48,8 +48,7 @@ export default function Footer() {
       </div>
 
       <p className="mt-4 text-center text-xs text-gray-400">
-        © {new Date().getFullYear()} Flik — Este sitio puede mostrar anuncios a
-        través de Google AdSense.
+        © {new Date().getFullYear()} Flik 
       </p>
     </footer>
   );

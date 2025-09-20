@@ -80,12 +80,7 @@ export default function RootLayout({
               id="cookieyes"
               src="https://cdn-cookieyes.com/client_data/8eefd0d2385ccb3becdf9718/script.js"
               strategy="lazyOnload"
-            />
-            <Script
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5063066587377461"
-              crossOrigin="anonymous"
-              strategy="lazyOnload"
-            ></Script>
+            />           
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=G-T1ZKQDYNZZ`}
               strategy="lazyOnload"
