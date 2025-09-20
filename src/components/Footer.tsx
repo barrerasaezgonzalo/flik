@@ -47,7 +47,7 @@ export default function Footer() {
         </nav>
       </div>
 
-      <p className="mt-4 text-center text-xs text-gray-400">
+      <p className="mt-4 text-center text-xs text-gray-700">
         © {new Date().getFullYear()} Flik 
       </p>
     </footer>
