@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getPosts } from "@/lib/posts";
-import AdBanner from "@/components/AddBanner";
 import { getCommentsByPostId } from "@/lib/comments";
 import PostListItem from "@/components/PostListItem";
 import Image from "next/image";
@@ -25,7 +24,7 @@ export default async function HomePage({
     visiblePosts.map(async (post) => {
       const comments = await getCommentsByPostId(post.id);
       commentCounts[post.id] = Array.isArray(comments) ? comments.length : 0;
-    })
+    }),
   );
 
   return (
@@ -36,7 +35,7 @@ export default async function HomePage({
         </h1>
       </section>
 
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">        
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
         <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
           <Image
             src="/ads/fintual.png"
@@ -94,8 +93,8 @@ export default async function HomePage({
         )}
       </div>
 
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">        
-        <Link href="https://mpago.li/1yh1MCv"  target="_blank">
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+        <Link href="https://mpago.li/1yh1MCv" target="_blank">
           <Image
             src="/ads/mercadopago.png"
             alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
@@ -106,7 +105,6 @@ export default async function HomePage({
             className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
           />
         </Link>
-
       </div>
     </div>
   );

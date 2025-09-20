@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getPostsByCategory } from "@/lib/posts";
 import { supabase } from "@/lib/supabaseClient";
-import AdBanner from "@/components/AddBanner";
 import { getCommentsByPostId } from "@/lib/comments";
 import PostListItem from "@/components/PostListItem";
 
@@ -48,12 +48,18 @@ export default async function CategoryPage(props: any) {
         Categoría: <span className="text-green-600">{category.name}</span>
       </h1>
 
-      {/* Google Ad Space */}
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed border-gray-300 rounded-lg">
-        <p className="text-sm text-gray-700 mb-2">Advertisement</p>
-        <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
-          <AdBanner />
-        </div>
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+        <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
+          <Image
+            src="/ads/fintual.png"
+            alt="Fintual - La mejor decisión para tu plata. Tus inversiones reguladas"
+            width={900}
+            height={185}
+            quality={75}
+            sizes="100vw"
+            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
+          />
+        </Link>
       </div>
 
       {visiblePosts.length === 0 ? (
@@ -105,12 +111,18 @@ export default async function CategoryPage(props: any) {
         </div>
       )}
 
-      {/* Google Ad Space */}
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed border-gray-300 rounded-lg">
-        <p className="text-sm text-gray-700 mb-2">Advertisement</p>
-        <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
-          <AdBanner />
-        </div>
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+        <Link href="https://mpago.li/1yh1MCv" target="_blank">
+          <Image
+            src="/ads/mercadopago.png"
+            alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
+            width={900}
+            height={185}
+            quality={75}
+            sizes="100vw"
+            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
+          />
+        </Link>
       </div>
     </div>
   );

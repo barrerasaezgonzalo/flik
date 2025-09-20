@@ -48,7 +48,7 @@ export default function Footer() {
       </div>
 
       <p className="mt-4 text-center text-xs text-gray-700">
-        © {new Date().getFullYear()} Flik 
+        © {new Date().getFullYear()} Flik
       </p>
     </footer>
   );

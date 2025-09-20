@@ -37,7 +37,7 @@ export default function PostListItem({
             </div>
           </Link>
         </div>
-        <div className="md:w-2/3">      
+        <div className="md:w-2/3">
           <div className="flex items-center text-sm text-gray-700 mb-2">
             <span>{formatDate(post.date)}</span>
             <span className="mx-2">•</span>

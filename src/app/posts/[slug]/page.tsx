@@ -6,7 +6,6 @@ import Comments from "@/components/Comments";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
-import AdBanner from "@/components/AddBanner";
 
 export async function generateMetadata({
   params,
@@ -93,12 +92,18 @@ export default async function PostPage(props: any) {
           />
         </div>
 
-        {/* Google Ad Space */}
-        <div className="bg-gray-100 p-4 my-8 text-center border border-dashed border-gray-300 rounded-lg">
-          <p className="text-sm text-gray-700 mb-2">Advertisement</p>
-          <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
-            <AdBanner />
-          </div>
+        <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+          <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
+            <Image
+              src="/ads/fintual.png"
+              alt="Fintual - La mejor decisión para tu plata. Tus inversiones reguladas"
+              width={900}
+              height={185}
+              quality={75}
+              sizes="100vw"
+              className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
+            />
+          </Link>
         </div>
 
         <div
@@ -107,13 +112,19 @@ export default async function PostPage(props: any) {
         />
       </article>
 
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed border-gray-300 rounded-lg">
-        <p className="text-sm text-gray-700 mb-2">Advertisement</p>
-        <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
-          <AdBanner />
-        </div>
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+        <Link href="https://mpago.li/1yh1MCv" target="_blank">
+          <Image
+            src="/ads/mercadopago.png"
+            alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
+            width={900}
+            height={185}
+            quality={75}
+            sizes="100vw"
+            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
+          />
+        </Link>
       </div>
-
       <Comments postId={post.id} initialComments={comments} />
 
       {relatedPosts.length > 0 && (

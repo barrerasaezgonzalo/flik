@@ -1,3 +1,6 @@
+import Link from "next/link";
+import Image from "next/image";
+
 export default function ContactoPage() {
   return (
     <div className="max-w-4xl mx-auto prose prose-lg">
@@ -31,6 +34,19 @@ export default function ContactoPage() {
         Gracias por ser parte de esta comunidad tecnológica y por apoyar este
         espacio que busca aprender, equivocarse y mejorar día a día.{" "}
       </p>
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+        <Link href="https://mpago.li/1yh1MCv" target="_blank">
+          <Image
+            src="/ads/mercadopago.png"
+            alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
+            width={900}
+            height={185}
+            quality={75}
+            sizes="100vw"
+            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
+          />
+        </Link>
+      </div>
     </div>
   );
 }
