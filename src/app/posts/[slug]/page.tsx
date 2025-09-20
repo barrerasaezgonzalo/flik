@@ -103,12 +103,12 @@ export default async function PostPage(props: any) {
         />
       </article>
 
-      <div className="bg-gray-100 p-4 my-12 text-center border border-dashed border-gray-300 rounded-lg">
-        <p className="text-sm text-gray-500 mb-2">Advertisement</p>
-        <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
-          <span className="text-gray-400">Google Ad Space (728x90)</span>
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed border-gray-300 rounded-lg">
+          <p className="text-sm text-gray-500 mb-2">Advertisement</p>
+          <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
+            <AdBanner />
+          </div>
         </div>
-      </div>
 
       <Comments postId={post.id} initialComments={comments} />
 

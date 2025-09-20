@@ -1,3 +1,5 @@
+import AdBanner from "@/components/AddBanner";
+
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto prose prose-lg">
@@ -49,6 +51,13 @@ export default function AboutPage() {
         quieres darnos ideas para mejorar, puedes escribirnos a{" "}
         <a href="mailto:hola@flik.cl">hola@flik.cl</a>.
       </p>
+
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed border-gray-300 rounded-lg">
+        <p className="text-sm text-gray-500 mb-2">Advertisement</p>
+        <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
+          <AdBanner />
+        </div>
+      </div>
     </div>
   );
 }

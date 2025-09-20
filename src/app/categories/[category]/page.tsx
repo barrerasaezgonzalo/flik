@@ -1,7 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getPostsByCategory, Post } from "@/lib/posts";
-import { formatDate } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
 import AdBanner from "@/components/AddBanner";
 import { getCommentsByPostId } from "@/lib/comments";
@@ -69,7 +67,6 @@ export default async function CategoryPage(props: any) {
               key={post.slug}
               post={post}
               commentCount={commentCounts[post.id] || 0}
-              lcpSlug={lcpSlug}
             />
           ))}
         </div>
