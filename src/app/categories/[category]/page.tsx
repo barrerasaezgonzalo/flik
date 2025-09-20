@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPostsByCategory, Post } from "@/lib/posts";
+import { getPostsByCategory } from "@/lib/posts";
 import { supabase } from "@/lib/supabaseClient";
 import AdBanner from "@/components/AddBanner";
 import { getCommentsByPostId } from "@/lib/comments";
@@ -41,8 +41,6 @@ export default async function CategoryPage(props: any) {
       commentCounts[post.id] = Array.isArray(comments) ? comments.length : 0;
     }),
   );
-
-  const lcpSlug = visiblePosts[0]?.slug;
 
   return (
     <div className="max-w-4xl mx-auto">

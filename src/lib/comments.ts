@@ -1,12 +1,5 @@
 import { supabase } from "./supabaseClient";
-
-export type Comment = {
-  id: string;
-  postId: string;
-  email: string;
-  content: string;
-  date: string;
-};
+import { Comment } from "@/types";
 
 export async function getCommentsByPostId(postId: string): Promise<Comment[]> {
   const { data, error } = await supabase

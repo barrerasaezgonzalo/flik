@@ -1,7 +1,7 @@
-import { Post } from "@/lib/posts";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
+import { Post } from "@/types";
 
 export default function PostListItem({
   post,
@@ -39,9 +39,9 @@ export default function PostListItem({
           <div className="flex items-center text-sm text-gray-500 mb-2">
             <span>{formatDate(post.date)}</span>
             <span className="mx-2">•</span>
-            <Link href={`/categories/${post.category.slug}`}>
+            <Link href={`/categories/${post.category?.slug ?? ""}`}>
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded hover:bg-green-200 transition-colors">
-                {post.category.name}
+                {post.category?.name ?? ""}
               </span>
             </Link>
             <span className="ml-2">{commentCount} comentarios</span>

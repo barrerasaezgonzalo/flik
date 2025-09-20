@@ -72,7 +72,7 @@ export default function NewPostPage() {
       return;
     }
 
-    const { error,data } = await supabase.from("posts").insert([
+    const { error } = await supabase.from("posts").insert([
       {
         ...form,
         created_at: new Date().toISOString(),

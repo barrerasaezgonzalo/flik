@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { getPostBySlug, getRelatedPosts, Post } from "@/lib/posts";
+import { getPostBySlug, getRelatedPosts } from "@/lib/posts";
+import { Post } from "@/types";
 import { getCommentsByPostId } from "@/lib/comments";
 import Comments from "@/components/Comments";
 import { formatDate } from "@/lib/utils";
@@ -57,16 +58,19 @@ export default async function PostPage(props: any) {
   if (!post) notFound();
 
   const comments = await getCommentsByPostId(post.id);
-  const relatedPosts = await getRelatedPosts(post.category.slug, post.slug);
+  const relatedPosts = await getRelatedPosts(
+    post.category?.slug ?? "",
+    post.slug,
+  );
 
   return (
     <div className="max-w-4xl mx-auto">
       <article>
         <header className="mb-8">
           <div className="flex items-center text-sm text-gray-500 mb-2">
-            <Link href={`/categories/${post.category.slug}`}>
+            <Link href={`/categories/${post.category?.slug ?? ""}`}>
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded hover:bg-green-200 transition-colors">
-                {post.category.name}
+                {post.category?.name ?? ""}
               </span>
             </Link>
             <span className="mx-2">•</span>
@@ -104,11 +108,11 @@ export default async function PostPage(props: any) {
       </article>
 
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed border-gray-300 rounded-lg">
-          <p className="text-sm text-gray-500 mb-2">Advertisement</p>
-          <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
-            <AdBanner />
-          </div>
+        <p className="text-sm text-gray-500 mb-2">Advertisement</p>
+        <div className="h-[90px] bg-gray-200 flex items-center justify-center rounded">
+          <AdBanner />
         </div>
+      </div>
 
       <Comments postId={post.id} initialComments={comments} />
 

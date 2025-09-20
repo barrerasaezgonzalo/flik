@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import AdBanner from "@/components/AddBanner";
-import { Post } from "@/lib/posts";
+import { Post } from "@/types";
 
 type Category = {
   id: string;
@@ -20,7 +20,7 @@ export default async function MapaPage({
       .from("posts")
       .select("title, slug, category_id")
       .order("date", { ascending: false }),
-    supabase.from("categories").select("id, name") as Promise<{
+    supabase.from("categories").select("id, name") as unknown as Promise<{
       data: Category[] | null;
     }>,
   ]);
@@ -29,17 +29,17 @@ export default async function MapaPage({
     return <p className="text-center mt-12">No hay publicaciones.</p>;
 
   const catMap = Object.fromEntries(
-    categories.map((c: Category) => [c.id, c.name])
+    categories.map((c: Category) => [c.id, c.name]),
   );
 
-  const porCategoria = posts.reduce<Record<string, Post[]>>(
-    (acc: Record<string, Post[]>, post: Post) => {
+  type MinimalPost = Pick<Post, "title" | "slug" | "category_id">;
+  const porCategoria = posts.reduce<Record<string, MinimalPost[]>>(
+    (acc, post) => {
       const catName = catMap[post.category_id ?? ""] ?? "Sin categoría";
-      if (!acc[catName]) acc[catName] = [];
-      acc[catName].push(post);
+      (acc[catName] ||= []).push(post);
       return acc;
     },
-    {}
+    {},
   );
 
   return (
@@ -69,7 +69,7 @@ export default async function MapaPage({
                 ))}
               </ul>
             </section>
-          )
+          ),
         )}
       </div>
 

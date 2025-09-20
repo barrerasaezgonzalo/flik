@@ -1,27 +1,5 @@
+import { Post, Category } from "@/types";
 import { supabase } from "./supabaseClient";
-
-type Category = {
-  id: string;
-  slug: string;
-  name: string;
-};
-
-export type Post = {
-  id: string;
-  slug: string;
-  title: string;
-  date: string;
-  image: string;
-  excerpt: string;
-  content: string;
-  featured: boolean;
-  category_id: string;
-  category: {
-    slug: string;
-    name: string;
-  };
-  created_at: string;
-};
 
 async function getCategories(): Promise<Category[]> {
   const { data, error } = await supabase

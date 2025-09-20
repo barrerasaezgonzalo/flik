@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Comment, addComment } from "@/lib/comments";
+import { addComment } from "@/lib/comments";
 import { formatDate } from "@/lib/utils";
+import { Comment } from "@/types";
 
 export default function Comments({
   postId,

@@ -11,7 +11,7 @@ export default function EditPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const router = useRouter();
-  const { slug } = use(params); // ← CORREGIDO
+  const { slug } = use(params);
   const [allowed, setAllowed] = useState(false);
 
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(
@@ -31,9 +31,34 @@ export default function EditPostPage({
   useEffect(() => {
     if (window.location.hostname === "localhost") {
       setAllowed(true);
+
+      const loadData = async () => {
+        const { data: cats } = await supabase
+          .from("categories")
+          .select("id, name");
+        if (cats) setCategories(cats);
+
+        const { data: post } = await supabase
+          .from("posts")
+          .select("*")
+          .eq("slug", slug)
+          .single();
+        if (post) {
+          setForm({
+            title: post.title || "",
+            slug: post.slug || "",
+            date: post.date?.slice(0, 10) || "",
+            excerpt: post.excerpt || "",
+            image: post.image || "",
+            content: post.content || "",
+            category_id: post.category_id || "",
+          });
+        }
+        setLoading(false);
+      };
       loadData();
     }
-  }, []);
+  }, [slug]);
 
   function generarSlug(texto: string) {
     return texto
@@ -55,31 +80,6 @@ export default function EditPostPage({
       }));
     }
   };
-
-  async function loadData() {
-    const { data: cats } = await supabase
-      .from("categories")
-      .select("id, name");
-    if (cats) setCategories(cats);
-
-    const { data: post } = await supabase
-      .from("posts")
-      .select("*")
-      .eq("slug", slug)
-      .single();
-    if (post) {
-      setForm({
-        title: post.title || "",
-        slug: post.slug || "",
-        date: post.date?.slice(0, 10) || "",
-        excerpt: post.excerpt || "",
-        image: post.image || "",
-        content: post.content || "",
-        category_id: post.category_id || "",
-      });
-    }
-    setLoading(false);
-  }
 
   const handleChange = (
     e: React.ChangeEvent<

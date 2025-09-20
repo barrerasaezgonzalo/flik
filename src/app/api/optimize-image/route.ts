@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     if (!fs.existsSync(imagePath)) {
       return NextResponse.json(
         { ok: false, error: "El archivo no existe en /public" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -26,6 +26,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: String(err) },
+      { status: 500 },
+    );
   }
 }

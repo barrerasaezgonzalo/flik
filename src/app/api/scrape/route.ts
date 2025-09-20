@@ -74,6 +74,7 @@ export async function POST(req: Request) {
       source: url,
     });
   } catch (e) {
+    console.log(e);
     return NextResponse.json(
       { error: "Error al procesar la URL" },
       { status: 500 },

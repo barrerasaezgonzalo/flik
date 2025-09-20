@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-import { Post } from "@/lib/posts";
+import { Post } from "@/types";
 
 type PostWithCategory = Post & {
   categories?: { name: string };
@@ -36,7 +36,7 @@ export default function AdminPage() {
   async function deletePost(slug: string) {
     if (
       !confirm(
-        `¿Seguro que quieres eliminar "${slug}"? Esta acción no se puede deshacer.`
+        `¿Seguro que quieres eliminar "${slug}"? Esta acción no se puede deshacer.`,
       )
     )
       return;
@@ -56,7 +56,7 @@ export default function AdminPage() {
   }
 
   const filteredPosts = posts.filter((post) =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase())
+    post.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
