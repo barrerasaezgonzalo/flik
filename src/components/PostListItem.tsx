@@ -35,8 +35,8 @@ export default function PostListItem({
             </div>
           </Link>
         </div>
-        <div className="md:w-2/3">
-          <div className="flex items-center text-sm text-gray-500 mb-2">
+        <div className="md:w-2/3">      
+          <div className="flex items-center text-sm text-gray-700 mb-2">
             <span>{formatDate(post.date)}</span>
             <span className="mx-2">•</span>
             <Link href={`/categories/${post.category?.slug ?? ""}`}>
@@ -54,10 +54,10 @@ export default function PostListItem({
               {post.title}
             </Link>
           </h2>
-          <p className="text-gray-600 mb-4">{post.excerpt}</p>
+          <p className="text-gray-700 mb-4">{post.excerpt}</p>
           <Link
             href={`/posts/${post.slug}`}
-            className="inline-flex items-center text-green-600 hover:text-green-800 font-medium"
+            className="inline-flex items-center text-green-800 hover:text-green-800 font-medium"
           >
             Sigue leyendo
             <svg
