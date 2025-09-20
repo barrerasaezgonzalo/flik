@@ -3,15 +3,17 @@ import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import { Post } from "@/types";
 
+interface PostListItemProps {
+  post: Post;
+  commentCount: number;
+  fetchpriority?: "high" | "low" | "auto";
+}
+
 export default function PostListItem({
   post,
   commentCount,
-  fetchpriority,
-}: {
-  post: Post;
-  commentCount: number;
-  fetchpriority?: "high" | "low" | "auto" | undefined;
-}) {
+  fetchpriority = "auto",
+}: PostListItemProps) {
   return (
     <article className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
       <div className="flex flex-col md:flex-row md:items-start">
