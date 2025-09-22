@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function Search() {
   const [query, setQuery] = useState("");
@@ -14,7 +15,7 @@ export default function Search() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center">
+    <form onSubmit={handleSubmit} className="flex items-center" role="form">
       <input
         aria-labelledby="search-button"
         type="text"

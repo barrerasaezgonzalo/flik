@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addComment } from "@/lib/comments";
 import { formatDate } from "@/lib/utils";
 import { Comment } from "@/types";
+import React from "react";
 
 export default function Comments({
   postId,
@@ -16,32 +17,72 @@ export default function Comments({
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = async (formData: FormData) => {
-    const email = formData.get("email") as string;
-    const content = formData.get("content") as string;
+  const [errorEmail, setErrorEmail] = useState<string | null>(null);
+  const [errorContent, setErrorContent] = useState<string | null>(null);
 
-    if (!email || !content) return;
+  const handleSubmit = async (formData: FormData): Promise<boolean> => {
+    const email = (formData.get("email") as string)?.trim();
+    const content = (formData.get("content") as string)?.trim();
 
-    formRef.current?.reset();
+    let hasError = false;
 
-    const newCommentData = { postId, email, content };
+    if (!email) {
+      setErrorEmail("El correo electrónico es obligatorio.");
+      hasError = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setErrorEmail("Ingresa un correo válido.");
+      hasError = true;
+    } else {
+      setErrorEmail(null);
+    }
+
+    if (!content) {
+      setErrorContent("El comentario no puede estar vacío.");
+      hasError = true;
+    } else if (content.length < 5) {
+      setErrorContent("El comentario debe tener al menos 5 caracteres.");
+      hasError = true;
+    } else {
+      setErrorContent(null);
+    }
+
+    if (hasError) return false;
 
     try {
-      await addComment(newCommentData);
-      router.refresh(); // recarga todos desde el servidor
-    } catch (error) {
-      console.error("Failed to add comment:", error);
+      await addComment({ postId, email, content });
+      return true;
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+      // Podrías setear un error genérico acá si querés
+      return false;
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const ok = await handleSubmit(formData);
+    if (ok) {
+      form.reset(); // 🔒 solo resetea cuando todo fue válido
+      router.refresh(); // 🔄 recarga comentarios desde el servidor
     }
   };
 
   return (
-    <section className="border-t pt-8 mt-12">
-      <h2 className="text-2xl font-bold mb-4">
+    <section className="border-t pt-8 mt-12" aria-labelledby="formTitle">
+      <h2 className="text-2xl font-bold mb-4 sr-only" id="formTitle">
         Comentarios ({initialComments.length})
       </h2>
 
       <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-        <form ref={formRef} action={handleSubmit} className="space-y-4">
+        <form
+          ref={formRef}
+          onSubmit={onSubmit}
+          noValidate
+          className="space-y-4"
+        >
           <div>
             <label
               htmlFor="email"
@@ -50,12 +91,19 @@ export default function Comments({
               Correo electrónico
             </label>
             <input
-              type="email"
+              autoComplete="email"
+              type="text"
               id="email"
               name="email"
-              required
+              aria-describedby="emailError"
+              aria-invalid={!!errorEmail}
               className="text-black w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
             />
+            {errorEmail && (
+              <p id="emailError" className="text-red-600 text-sm mt-1">
+                {errorEmail}
+              </p>
+            )}
           </div>
           <div>
             <label
@@ -65,14 +113,22 @@ export default function Comments({
               Comentario
             </label>
             <textarea
+              autoComplete="off"
               id="content"
               name="content"
               rows={4}
-              required
+              aria-describedby="contentError"
+              aria-invalid={!!errorContent}
               className="text-black w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-            ></textarea>
+            />
+            {errorContent && (
+              <p id="contentError" className="text-red-600 text-sm mt-1">
+                {errorContent}
+              </p>
+            )}
           </div>
           <button
+            aria-label="Enviar comentario"
             type="submit"
             className="px-4 py-2 bg-black text-white rounded-md hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition-colors"
           >

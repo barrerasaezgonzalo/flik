@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import { Post } from "@/types";
+import React from "react";
 
 interface PostListItemProps {
   post: Post;

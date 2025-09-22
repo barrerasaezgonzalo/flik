@@ -10,9 +10,10 @@ import Image from "next/image";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {
@@ -50,9 +51,12 @@ export async function generateMetadata({
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function PostPage(props: any) {
-  const { slug } = props.params;
-
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 

@@ -4,6 +4,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Code from "@tiptap/extension-code";
+import React from "react";
 
 export default function MiniEditor({
   value,
@@ -40,12 +41,6 @@ export default function MiniEditor({
 
   if (!editor) return null;
 
-  // const setLink = () => {
-  //   const url = prompt("URL del enlace:");
-  //   if (!url) return;
-  //   editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-  // };
-
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2">
@@ -55,10 +50,6 @@ export default function MiniEditor({
         <Button onClick={() => editor.chain().focus().toggleCode().run()}>
           {"</>"}
         </Button>
-        {/* <Button onClick={setLink}>Link</Button>
-        <Button onClick={() => editor.chain().focus().unsetLink().run()}>
-          Quitar link
-        </Button> */}
       </div>
 
       <EditorContent editor={editor} />

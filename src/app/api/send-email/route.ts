@@ -8,7 +8,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // 👇 Usa la Service Role Key, solo en backend
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 export async function POST(req: Request) {
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     if (type !== "INSERT" || table !== "comments") {
       return NextResponse.json(
         { ok: false, reason: "Evento no soportado" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -61,7 +61,7 @@ Contenido: ${record.content}`,
     console.error("Error en send-email:", error);
     return NextResponse.json(
       { ok: false, error: String(error) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

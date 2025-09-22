@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Search from "./Search";
+import React from "react";
 
 export default function Header() {
   return (

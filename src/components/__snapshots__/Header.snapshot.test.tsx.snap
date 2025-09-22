@@ -1,0 +1,80 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Header snapshots > match snapshot render 1`] = `
+<div>
+  <header
+    class="bg-white shadow-sm border-b-2 border-green-600"
+  >
+    <div
+      class="container mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
+    >
+      <h1
+        class="text-2xl font-bold !text-black flex justify-center sm:justify-start"
+      >
+        <a
+          href="/"
+        >
+          <img
+            alt="Flik Blog"
+            class="w-24 h-24 object-contain"
+            height="100"
+            src="/logo.png"
+            width="100"
+          />
+        </a>
+      </h1>
+      <nav
+        class="w-full sm:w-auto"
+      >
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:space-x-6 gap-3 sm:gap-0"
+        >
+          <ul
+            class="flex flex-col sm:flex-row sm:space-x-6 text-center sm:text-left"
+          >
+            <li>
+              <a
+                class="block py-1 text-gray-600 hover:text-green-600 transition-colors"
+                href="/"
+              >
+                Posts
+              </a>
+            </li>
+            <li>
+              <a
+                class="block py-1 text-gray-600 hover:text-green-600 transition-colors"
+                href="/about"
+              >
+                Sobre Flik
+              </a>
+            </li>
+            <li>
+              <a
+                class="block py-1 text-gray-600 hover:text-green-600 transition-colors"
+                href="/mapa?modo=categorias"
+              >
+                Categorías
+              </a>
+            </li>
+            <li>
+              <a
+                class="block py-1 text-gray-600 hover:text-green-600 transition-colors"
+                href="/contact"
+              >
+                Contacto
+              </a>
+            </li>
+          </ul>
+          <div
+            class="flex justify-center sm:justify-start"
+          >
+            <div
+              data-testid="mock-search"
+            />
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+</div>
+`;
