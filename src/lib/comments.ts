@@ -11,7 +11,7 @@ export async function getCommentsByPostId(postId: string): Promise<Comment[]> {
 
   if (error) {
     Sentry.captureException(error);
-    throw error;
+    return [];
   }
 
   return (data ?? []) as Comment[];

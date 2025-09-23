@@ -2,7 +2,7 @@ import { Post, Category } from "@/types";
 import { supabase } from "./supabaseClient";
 import * as Sentry from "@sentry/nextjs";
 
-async function getCategories(): Promise<Category[]> {
+export async function getCategories(): Promise<Category[]> {
   const { data, error } = await supabase
     .from("categories")
     .select("id,slug,name");
@@ -29,7 +29,7 @@ export async function getPosts(): Promise<Post[]> {
 
   if (error) {
     Sentry.captureException(error);
-    throw error;
+    return [];
   }
 
   return posts.map((p) => ({
@@ -50,7 +50,7 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
 
   if (error) {
     Sentry.captureException(error);
-    throw error;
+    return undefined;
   }
 
   // obtener categorías para mapear
@@ -82,7 +82,7 @@ export async function getPostsByCategory(
 
   if (postsError) {
     Sentry.captureException(postsError);
-    throw postsError;
+    return [];
   }
 
   const category = categories.find((c) => c.slug === categorySlug);
@@ -112,7 +112,7 @@ export async function searchPosts(query: string): Promise<Post[]> {
 
   if (postsError) {
     Sentry.captureException(postsError);
-    throw postsError;
+    return [];
   }
 
   return posts.map((p) => ({
@@ -142,7 +142,7 @@ export async function getRelatedPosts(
 
   if (postsError) {
     Sentry.captureException(postsError);
-    throw postsError;
+    return [];
   }
 
   const category = categories.find((c) => c.slug === categorySlug);

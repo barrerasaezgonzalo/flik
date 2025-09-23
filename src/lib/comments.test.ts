@@ -62,7 +62,7 @@ describe("comments lib", () => {
     it("devuelve [] si hay error", async () => {
       orderMock.mockResolvedValueOnce({
         data: null,
-        error: new Error("Fallo supabase"),
+        error: { message: "Fallo supabase" },
       });
       eqMock.mockReturnValueOnce({ order: orderMock });
       selectMock.mockReturnValueOnce({ eq: eqMock });

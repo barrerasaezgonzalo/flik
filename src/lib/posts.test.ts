@@ -4,11 +4,16 @@ import {
   getPostsByCategory,
   searchPosts,
   getRelatedPosts,
+  getCategories,
 } from "./posts";
 import { vi, describe, it, expect, beforeEach } from "vitest";
+import * as Sentry from "@sentry/nextjs";
+
+vi.mock("@sentry/nextjs", () => ({
+  captureException: vi.fn(),
+}));
 
 // ---- Mock de supabase ----
-// definimos el mock dentro del factory y lo exportamos como __fromMock
 vi.mock("./supabaseClient", () => {
   const fromMock = vi.fn();
   return {
@@ -22,7 +27,6 @@ vi.mock("next/cache", () => ({
   unstable_noStore: vi.fn(),
 }));
 
-// 👇 Importamos el mock expuesto
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 /* @ts-expect-error */
 import { __fromMock as fromMock } from "./supabaseClient";
@@ -67,10 +71,10 @@ describe("posts lib", () => {
 
     const result = await getPosts();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    /* @ts-expect-error */
+    // @ts-expect-error
     expect(result[0].category.name).toBe("Tech");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    /* @ts-expect-error */
+    // @ts-expect-error
     expect(result[1].category.slug).toBe("life");
   });
 
@@ -80,7 +84,7 @@ describe("posts lib", () => {
         return {
           select: () => ({
             order: () =>
-              Promise.resolve({ data: null, error: new Error("fail") }),
+              Promise.resolve({ data: null, error: { message: "fail" } }),
           }),
         };
       }
@@ -124,7 +128,7 @@ describe("posts lib", () => {
 
     const result = await getPostBySlug("p1");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    /* @ts-expect-error */
+    // @ts-expect-error
     expect(result?.category.name).toBe("Tech");
   });
 
@@ -135,7 +139,10 @@ describe("posts lib", () => {
           select: () => ({
             eq: () => ({
               single: () =>
-                Promise.resolve({ data: null, error: new Error("not found") }),
+                Promise.resolve({
+                  data: null,
+                  error: { message: "not found" },
+                }),
             }),
           }),
         };
@@ -179,7 +186,7 @@ describe("posts lib", () => {
     const result = await getPostsByCategory("tech");
     expect(result).toHaveLength(1);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    /* @ts-expect-error */
+    // @ts-expect-error
     expect(result[0].category.name).toBe("Tech");
   });
 
@@ -239,7 +246,7 @@ describe("posts lib", () => {
     const result = await searchPosts("hola");
     expect(result[0].title).toBe("hola");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    /* @ts-expect-error */
+    // @ts-expect-error
     expect(result[0].category.slug).toBe("tech");
   });
 
@@ -250,7 +257,7 @@ describe("posts lib", () => {
           select: () => ({
             or: () => ({
               order: () =>
-                Promise.resolve({ data: null, error: new Error("fail") }),
+                Promise.resolve({ data: null, error: { message: "fail" } }),
             }),
           }),
         };
@@ -315,7 +322,7 @@ describe("posts lib", () => {
             neq: () => ({
               order: () => ({
                 limit: () =>
-                  Promise.resolve({ data: null, error: new Error("fail") }),
+                  Promise.resolve({ data: null, error: { message: "fail" } }),
               }),
             }),
           }),
@@ -325,32 +332,6 @@ describe("posts lib", () => {
 
     const result = await getRelatedPosts("tech", "p1");
     expect(result).toEqual([]);
-  });
-
-  it("getPosts devuelve [] si getCategories falla", async () => {
-    fromMock.mockImplementation((table: string) => {
-      if (table === "posts") {
-        return {
-          select: () => ({
-            order: () =>
-              Promise.resolve({
-                data: [{ id: "1", slug: "p1", category_id: "c1" }],
-                error: null,
-              }),
-          }),
-        };
-      }
-      if (table === "categories") {
-        return {
-          select: () =>
-            Promise.resolve({ data: null, error: new Error("fail cats") }),
-        };
-      }
-    });
-
-    const result = await getPosts();
-    // debería mapear posts pero categorías = []
-    expect(result[0].category).toEqual({ slug: "", name: "" });
   });
 
   it("getPostBySlug devuelve post con categoría vacía si no encuentra match", async () => {
@@ -372,7 +353,7 @@ describe("posts lib", () => {
         return {
           select: () =>
             Promise.resolve({
-              data: [{ id: "c1", slug: "tech", name: "Tech" }], // 👈 no coincide
+              data: [{ id: "c1", slug: "tech", name: "Tech" }], // no coincide
               error: null,
             }),
         };
@@ -398,7 +379,10 @@ describe("posts lib", () => {
         return {
           select: () => ({
             order: () =>
-              Promise.resolve({ data: null, error: new Error("fail posts") }),
+              Promise.resolve({
+                data: null,
+                error: { message: "fail posts" },
+              }),
           }),
         };
       }
@@ -434,7 +418,7 @@ describe("posts lib", () => {
         return {
           select: () =>
             Promise.resolve({
-              data: [{ id: "c1", slug: "tech", name: "Tech" }], // 👈 no coincide
+              data: [{ id: "c1", slug: "tech", name: "Tech" }],
               error: null,
             }),
         };
@@ -444,10 +428,10 @@ describe("posts lib", () => {
     const result = await searchPosts("raro");
     expect(result[0].category).toEqual({ slug: "", name: "" });
   });
+
   it("getRelatedPosts devuelve [] si la categoría no existe (branch !category)", async () => {
     fromMock.mockImplementation((table: string) => {
       if (table === "categories") {
-        // No hay categoría con el slug solicitado
         return {
           select: () =>
             Promise.resolve({
@@ -457,7 +441,6 @@ describe("posts lib", () => {
         };
       }
       if (table === "posts") {
-        // Posts válidos para que no corte antes por postsError/!posts
         return {
           select: () => ({
             neq: () => ({
@@ -479,5 +462,69 @@ describe("posts lib", () => {
 
     const result = await getRelatedPosts("no-existe", "pX");
     expect(result).toEqual([]);
+  });
+
+  it("getCategories lanza y reporta error si Supabase falla", async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === "categories") {
+        return {
+          select: () =>
+            Promise.resolve({ data: null, error: { message: "fail cats" } }),
+        };
+      }
+    });
+
+    await expect(getCategories()).rejects.toEqual(
+      expect.objectContaining({ message: "fail cats" }),
+    );
+
+    expect(Sentry.captureException).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "fail cats" }),
+    );
+  });
+
+  it("getCategories devuelve [] si data es null pero no hay error", async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === "categories") {
+        return {
+          select: () => Promise.resolve({ data: null, error: null }),
+        };
+      }
+    });
+
+    const result = await getCategories();
+    expect(result).toEqual([]);
+  });
+
+  it("getPosts asigna categoría vacía si no encuentra match", async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === "posts") {
+        return {
+          select: () => ({
+            order: () =>
+              Promise.resolve({
+                data: [
+                  { id: "1", slug: "p1", category_id: "no-existe" }, // 👈 categoría inexistente
+                ],
+                error: null,
+              }),
+          }),
+        };
+      }
+      if (table === "categories") {
+        return {
+          select: () =>
+            Promise.resolve({
+              data: [{ id: "c1", slug: "tech", name: "Tech" }], // 👈 no coincide con "no-existe"
+              error: null,
+            }),
+        };
+      }
+    });
+
+    const result = await getPosts();
+
+    // ✅ fuerza a entrar al branch del "?? { slug: '', name: '' }"
+    expect(result[0].category).toEqual({ slug: "", name: "" });
   });
 });
