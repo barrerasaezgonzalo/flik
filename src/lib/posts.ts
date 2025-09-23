@@ -1,34 +1,35 @@
 import { Post, Category } from "@/types";
 import { supabase } from "./supabaseClient";
+import * as Sentry from "@sentry/nextjs";
 
 async function getCategories(): Promise<Category[]> {
   const { data, error } = await supabase
     .from("categories")
     .select("id,slug,name");
-  if (error || !data) {
-    console.error(error);
-    return [];
+  if (error) {
+    Sentry.captureException(error);
+    throw error;
   }
-  return data;
+  return data || [];
 }
 
 export async function getPosts(): Promise<Post[]> {
   const { unstable_noStore } = await import("next/cache");
   unstable_noStore();
 
-  const [{ data: posts, error: postsError }, categories] = await Promise.all([
+  const [{ data: posts, error }, categories] = await Promise.all([
     supabase
       .from("posts")
       .select(
         "id, slug, title, date, image, excerpt, content, featured, category_id, created_at",
-      ) // 👈 ahora incluye created_at
+      )
       .order("created_at", { ascending: false }),
     getCategories(),
   ]);
 
-  if (postsError || !posts) {
-    if (postsError) console.error("Error al cargar posts:", postsError.message);
-    return [];
+  if (error) {
+    Sentry.captureException(error);
+    throw error;
   }
 
   return posts.map((p) => ({
@@ -47,9 +48,9 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
     .eq("slug", slug)
     .single();
 
-  if (error || !data) {
-    console.error(error as unknown);
-    return undefined;
+  if (error) {
+    Sentry.captureException(error);
+    throw error;
   }
 
   // obtener categorías para mapear
@@ -79,9 +80,9 @@ export async function getPostsByCategory(
       .order("created_at", { ascending: false }),
   ]);
 
-  if (postsError || !posts) {
-    console.error(postsError);
-    return [];
+  if (postsError) {
+    Sentry.captureException(postsError);
+    throw postsError;
   }
 
   const category = categories.find((c) => c.slug === categorySlug);
@@ -109,9 +110,9 @@ export async function searchPosts(query: string): Promise<Post[]> {
     getCategories(),
   ]);
 
-  if (postsError || !posts) {
-    console.error(postsError);
-    return [];
+  if (postsError) {
+    Sentry.captureException(postsError);
+    throw postsError;
   }
 
   return posts.map((p) => ({
@@ -139,9 +140,9 @@ export async function getRelatedPosts(
       .limit(50),
   ]);
 
-  if (postsError || !posts) {
-    console.error(postsError);
-    return [];
+  if (postsError) {
+    Sentry.captureException(postsError);
+    throw postsError;
   }
 
   const category = categories.find((c) => c.slug === categorySlug);

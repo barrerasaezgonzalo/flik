@@ -9,13 +9,17 @@ const PAGE_SIZE = 15;
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams?: { page?: string };
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const params = await searchParams; // 👈 lo resolvemos
+
   const posts = await getPosts();
-  const page = parseInt(searchParams?.page || "1", 10);
+  const page = parseInt((params?.page as string) || "1", 10);
+
   const totalPages = Math.ceil(posts.length / PAGE_SIZE);
   const start = (page - 1) * PAGE_SIZE;
   const end = start + PAGE_SIZE;
+
   const visiblePosts = posts.slice(start, end);
   const commentCounts: Record<string, number> = {};
 

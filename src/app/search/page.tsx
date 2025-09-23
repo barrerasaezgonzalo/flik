@@ -40,11 +40,13 @@ async function SearchResultsComponent({ query }: { query: string }) {
   );
 }
 
-export default function SearchPage(props: unknown) {
-  const { searchParams } = props as {
-    searchParams?: Record<string, string | string[] | undefined>;
-  };
-  const query = typeof searchParams?.q === "string" ? searchParams.q : "";
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const query = typeof params?.q === "string" ? params.q : "";
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">

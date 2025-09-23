@@ -1,5 +1,6 @@
 import { supabase } from "./supabaseClient";
 import { Comment } from "@/types";
+import * as Sentry from "@sentry/nextjs";
 
 export async function getCommentsByPostId(postId: string): Promise<Comment[]> {
   const { data, error } = await supabase
@@ -9,8 +10,8 @@ export async function getCommentsByPostId(postId: string): Promise<Comment[]> {
     .order("date", { ascending: false });
 
   if (error) {
-    console.error("Supabase error:", error);
-    return [];
+    Sentry.captureException(error);
+    throw error;
   }
 
   return (data ?? []) as Comment[];
@@ -26,7 +27,7 @@ export async function addComment(
     .single();
 
   if (error) {
-    console.error("Supabase error:", error);
+    Sentry.captureException(error);
     throw error;
   }
 

@@ -12,9 +12,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://flik.cl"),
   title: "Flik - Blog de tecnología y desarrollo",
   description:
     "Flik es un blog de tecnología en español con artículos sobre desarrollo, IA, seguridad, herramientas y experiencias reales.",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "Flik - Blog de tecnología y desarrollo",
     description:

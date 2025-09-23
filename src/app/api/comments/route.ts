@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabaseClient";
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 
 export const revalidate = 0; // desactiva cache
 
@@ -39,6 +40,9 @@ export async function POST(req: Request) {
     .single();
 
   if (error) {
+    Sentry.captureException(error, {
+      extra: { body },
+    });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

@@ -1,3 +1,6 @@
+// next.config.js
+import { withSentryConfig } from "@sentry/nextjs";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -7,13 +10,12 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    legacyBrowsers: false, // ⚡ Desactiva soporte a navegadores viejos
+    legacyBrowsers: false,
   },
   optimizeCss: true,
   async headers() {
     return [
       {
-        // Cachea archivos estáticos
         source: "/(.*)\\.(js|css|svg|png|jpg|jpeg|webp|ico|woff2|ttf)$",
         headers: [
           {
@@ -23,7 +25,6 @@ const nextConfig = {
         ],
       },
       {
-        // No cachea HTML
         source: "/(.*)",
         headers: [
           {
@@ -36,4 +37,14 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN, // 👈 necesario para subir source maps
+
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  tunnelRoute: "/monitoring",
+  disableLogger: true,
+  automaticVercelMonitors: true,
+});

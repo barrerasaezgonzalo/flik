@@ -6,6 +6,7 @@ import Comments from "@/components/Comments";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
+import * as Sentry from "@sentry/nextjs";
 
 export async function generateMetadata({
   params,
@@ -58,8 +59,13 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-  if (!post) notFound();
-
+  if (!post) {
+    Sentry.captureMessage("❌ Post no encontrado", {
+      level: "error",
+      extra: { slug },
+    });
+    notFound();
+  }
   const comments = await getCommentsByPostId(post.id);
   const relatedPosts = await getRelatedPosts(
     post.category?.slug ?? "",
