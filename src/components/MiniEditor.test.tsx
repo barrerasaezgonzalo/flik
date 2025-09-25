@@ -7,7 +7,7 @@ import React from "react";
 const chainMock = {
   focus: vi.fn().mockReturnThis(),
   toggleBold: vi.fn().mockReturnThis(),
-  toggleCode: vi.fn().mockReturnThis(),
+  toggleCodeBlock: vi.fn().mockReturnThis(),
   run: vi.fn(),
 };
 
@@ -55,10 +55,10 @@ describe("MiniEditor", () => {
     expect(chainMock.toggleBold).toHaveBeenCalled();
   });
 
-  it("el botón Code llama a toggleCode", () => {
+  it("el botón Code llama a toggleCodeBlock", () => {
     render(<MiniEditor value="" onChange={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: "</>" }));
-    expect(chainMock.toggleCode).toHaveBeenCalled();
+    expect(chainMock.toggleCodeBlock).toHaveBeenCalled();
   });
 
   it("onChange se llama en onUpdate", () => {

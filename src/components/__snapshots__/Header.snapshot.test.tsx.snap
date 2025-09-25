@@ -8,7 +8,7 @@ exports[`Header snapshots > match snapshot render 1`] = `
     <div
       class="container mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
     >
-      <h1
+      <div
         class="text-2xl font-bold !text-black flex justify-center sm:justify-start"
       >
         <a
@@ -22,7 +22,7 @@ exports[`Header snapshots > match snapshot render 1`] = `
             width="100"
           />
         </a>
-      </h1>
+      </div>
       <nav
         class="w-full sm:w-auto"
       >
