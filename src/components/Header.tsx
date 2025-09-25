@@ -7,7 +7,7 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm border-b-2 border-green-600">
       <div className="container mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <h1 className="text-2xl font-bold !text-black flex justify-center sm:justify-start">
+        <div className="text-2xl font-bold !text-black flex justify-center sm:justify-start">
           <Link href="/">
             <Image
               src="/logo.png"
@@ -17,7 +17,7 @@ export default function Header() {
               className="w-24 h-24 object-contain"
             />
           </Link>
-        </h1>
+        </div>
 
         <nav className="w-full sm:w-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 gap-3 sm:gap-0">

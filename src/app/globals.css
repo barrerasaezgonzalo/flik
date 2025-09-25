@@ -45,3 +45,12 @@ pre {
   display: block;
   height: 1rem;
 }
+
+.prose pre {
+  background-color: #fff; /* blanco */
+  color: #000; /* texto negro */
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.875rem; /* text-sm */
+}

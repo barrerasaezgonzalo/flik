@@ -18,10 +18,11 @@ export default async function HomePage({
   const posts = await getPosts();
   const page = parseInt((params?.page as string) || "1", 10);
 
-  const { 
-    items: visiblePosts, 
-    totalPages 
-  } = getPaginatedItems(posts, page, PAGE_SIZE);
+  const { items: visiblePosts, totalPages } = getPaginatedItems(
+    posts,
+    page,
+    PAGE_SIZE,
+  );
   const commentCounts: Record<string, number> = {};
 
   // Get comment counts for all visible posts

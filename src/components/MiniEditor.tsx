@@ -49,7 +49,26 @@ export default function MiniEditor({
         <Button onClick={() => editor.chain().focus().toggleBold().run()}>
           <b>B</b>
         </Button>
-        <Button onClick={() => editor.chain().focus().toggleCode().run()}>
+        <Button
+          onClick={() => {
+            const url = prompt("Ingresa la URL");
+            if (url) {
+              editor
+                .chain()
+                .focus()
+                .extendMarkRange("link")
+                .setLink({ href: url })
+                .run();
+            }
+          }}
+        >
+          🔗
+        </Button>
+
+        <Button onClick={() => editor.chain().focus().unsetLink().run()}>
+          ❌🔗
+        </Button>
+        <Button onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
           {"</>"}
         </Button>
         <Button onClick={() => setExpanded(true)}>Expandir</Button>
@@ -70,7 +89,28 @@ export default function MiniEditor({
               <Button onClick={() => editor.chain().focus().toggleBold().run()}>
                 <b>B</b>
               </Button>
-              <Button onClick={() => editor.chain().focus().toggleCode().run()}>
+              <Button
+                onClick={() => {
+                  const url = prompt("Ingresa la URL");
+                  if (url) {
+                    editor
+                      .chain()
+                      .focus()
+                      .extendMarkRange("link")
+                      .setLink({ href: url })
+                      .run();
+                  }
+                }}
+              >
+                🔗
+              </Button>
+
+              <Button onClick={() => editor.chain().focus().unsetLink().run()}>
+                ❌🔗
+              </Button>
+              <Button
+                onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+              >
                 {"</>"}
               </Button>
             </div>

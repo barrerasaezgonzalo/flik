@@ -16,21 +16,21 @@ export interface PaginationResult<T> {
 export function getPaginatedItems<T>(
   items: T[],
   currentPage: number,
-  pageSize: number
+  pageSize: number,
 ): PaginationResult<T> {
   const totalItems = items.length;
   const totalPages = Math.ceil(totalItems / pageSize);
-  
+
   // Validar página actual
   const validPage = Math.min(Math.max(1, currentPage), totalPages || 1);
   const startIdx = (validPage - 1) * pageSize;
   const paginatedItems = items.slice(startIdx, startIdx + pageSize);
-  
+
   return {
     items: paginatedItems,
     totalPages: totalPages || 1,
     currentPage: validPage,
     hasNextPage: validPage < totalPages,
-    hasPreviousPage: validPage > 1
+    hasPreviousPage: validPage > 1,
   };
 }

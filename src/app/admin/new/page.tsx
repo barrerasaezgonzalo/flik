@@ -43,7 +43,7 @@ export default function NewPostPage() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -130,12 +130,7 @@ export default function NewPostPage() {
           ))}
         </select>
 
-        <input
-          name="image"
-          type="hidden"
-          value={form.image}
-          readOnly          
-        />
+        <input name="image" type="hidden" value={form.image} readOnly />
         <input
           name="excerpt"
           value={form.excerpt}

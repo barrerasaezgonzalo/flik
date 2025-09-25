@@ -102,6 +102,8 @@ export default async function PostPage({
           />
         </div>
 
+        <h2 className="text-lg text-white leading mt-8">{post.excerpt}</h2>
+
         <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
           <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
             <Image

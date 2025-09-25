@@ -29,11 +29,12 @@ export default async function CategoryPage(props: any) {
   }
 
   const posts = await getPostsByCategory(categorySlug);
-  
-  const { 
-    items: paginatedPosts, 
-    totalPages 
-  } = getPaginatedItems(posts, page, PAGE_SIZE);
+
+  const { items: paginatedPosts, totalPages } = getPaginatedItems(
+    posts,
+    page,
+    PAGE_SIZE,
+  );
   const commentCounts: Record<string, number> = {};
 
   // Get comment counts for all visible posts

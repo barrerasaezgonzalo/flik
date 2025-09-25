@@ -148,12 +148,7 @@ export default function EditPostPage({
             </option>
           ))}
         </select>
-        <input
-          name="image"
-          type="hidden"
-          value={form.image}
-          readOnly          
-        />
+        <input name="image" type="hidden" value={form.image} readOnly />
         <input
           name="excerpt"
           value={form.excerpt}
