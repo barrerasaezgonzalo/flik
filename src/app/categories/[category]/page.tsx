@@ -1,14 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getPostsByCategory } from "@/lib/posts";
-import { supabase } from "@/lib/supabaseClient";
 import { getCommentsByPostId } from "@/lib/comments";
+import { getPaginatedItems } from "@/lib/utils";
 import PostListItem from "@/components/PostListItem";
+import { Post } from "@/types";
+import { supabase } from "@/lib/supabaseClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 15;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function CategoryPage(props: any) {
@@ -27,16 +29,16 @@ export default async function CategoryPage(props: any) {
   }
 
   const posts = await getPostsByCategory(categorySlug);
-  const totalPages = Math.ceil(posts.length / PAGE_SIZE);
-
-  const start = (page - 1) * PAGE_SIZE;
-  const end = start + PAGE_SIZE;
-  const visiblePosts = posts.slice(start, end);
+  
+  const { 
+    items: paginatedPosts, 
+    totalPages 
+  } = getPaginatedItems(posts, page, PAGE_SIZE);
   const commentCounts: Record<string, number> = {};
 
   // Get comment counts for all visible posts
   await Promise.all(
-    visiblePosts.map(async (post) => {
+    paginatedPosts.map(async (post: Post) => {
       const comments = await getCommentsByPostId(post.id);
       commentCounts[post.id] = Array.isArray(comments) ? comments.length : 0;
     }),
@@ -62,11 +64,11 @@ export default async function CategoryPage(props: any) {
         </Link>
       </div>
 
-      {visiblePosts.length === 0 ? (
+      {paginatedPosts.length === 0 ? (
         <p className="text-gray-600">No hay publicaciones en esta categoría.</p>
       ) : (
         <div className="space-y-8">
-          {visiblePosts.map((post) => (
+          {paginatedPosts.map((post: Post) => (
             <PostListItem
               key={post.slug}
               post={post}

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { getPosts } from "@/lib/posts";
 import { getCommentsByPostId } from "@/lib/comments";
+import { getPaginatedItems } from "@/lib/utils";
 import PostListItem from "@/components/PostListItem";
 import Image from "next/image";
+import { Post } from "@/types";
 
 const PAGE_SIZE = 15;
 
@@ -16,16 +18,15 @@ export default async function HomePage({
   const posts = await getPosts();
   const page = parseInt((params?.page as string) || "1", 10);
 
-  const totalPages = Math.ceil(posts.length / PAGE_SIZE);
-  const start = (page - 1) * PAGE_SIZE;
-  const end = start + PAGE_SIZE;
-
-  const visiblePosts = posts.slice(start, end);
+  const { 
+    items: visiblePosts, 
+    totalPages 
+  } = getPaginatedItems(posts, page, PAGE_SIZE);
   const commentCounts: Record<string, number> = {};
 
   // Get comment counts for all visible posts
   await Promise.all(
-    visiblePosts.map(async (post) => {
+    visiblePosts.map(async (post: Post) => {
       const comments = await getCommentsByPostId(post.id);
       commentCounts[post.id] = Array.isArray(comments) ? comments.length : 0;
     }),
