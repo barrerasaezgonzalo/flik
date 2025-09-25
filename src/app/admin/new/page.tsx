@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
+import MiniEditor from "@/components/MiniEditor";
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function NewPostPage() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -131,11 +132,9 @@ export default function NewPostPage() {
 
         <input
           name="image"
+          type="hidden"
           value={form.image}
-          onChange={handleChange}
-          placeholder="URL de imagen"
-          readOnly
-          className="w-full border p-2 rounded cursor-not-allowed"
+          readOnly          
         />
         <input
           name="excerpt"
@@ -144,13 +143,9 @@ export default function NewPostPage() {
           placeholder="Resumen corto"
           className="w-full border p-2 rounded"
         />
-        <textarea
-          name="content"
+        <MiniEditor
           value={form.content}
-          onChange={handleChange}
-          placeholder="Contenido del post"
-          rows={8}
-          className="w-full border p-2 rounded"
+          onChange={(html) => setForm((f) => ({ ...f, content: html }))}
         />
 
         <button

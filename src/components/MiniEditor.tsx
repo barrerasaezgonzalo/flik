@@ -4,7 +4,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Code from "@tiptap/extension-code";
-import React from "react";
+import React, { useState } from "react";
 
 export default function MiniEditor({
   value,
@@ -13,6 +13,8 @@ export default function MiniEditor({
   value: string;
   onChange: (html: string) => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -27,7 +29,7 @@ export default function MiniEditor({
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
     ],
-    content: value || "<p>Escribe aquí…</p>",
+    content: value || "",
     editorProps: {
       attributes: {
         class:
@@ -43,16 +45,47 @@ export default function MiniEditor({
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 items-center">
         <Button onClick={() => editor.chain().focus().toggleBold().run()}>
           <b>B</b>
         </Button>
         <Button onClick={() => editor.chain().focus().toggleCode().run()}>
           {"</>"}
         </Button>
+        <Button onClick={() => setExpanded(true)}>Expandir</Button>
       </div>
 
-      <EditorContent editor={editor} />
+      {!expanded && (
+        <EditorContent
+          editor={editor}
+          className="prose prose-sm max-w-none text-white"
+        />
+      )}
+
+      {expanded && (
+        <div className="fixed inset-0 z-50 bg-black flex flex-col">
+          {/* Barra de herramientas */}
+          <div className="p-2 border-b bg-black flex justify-between items-center shadow">
+            <div className="flex gap-2">
+              <Button onClick={() => editor.chain().focus().toggleBold().run()}>
+                <b>B</b>
+              </Button>
+              <Button onClick={() => editor.chain().focus().toggleCode().run()}>
+                {"</>"}
+              </Button>
+            </div>
+            <Button onClick={() => setExpanded(false)}>Cerrar</Button>
+          </div>
+
+          {/* Área del editor */}
+          <div className="flex-1 overflow-auto p-4 bg-black">
+            <EditorContent
+              editor={editor}
+              className="prose prose-sm max-w-none text-white"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -68,7 +101,7 @@ function Button({
     <button
       type="button"
       onClick={onClick}
-      className="px-2 py-1 rounded border text-sm hover:bg-gray-50"
+      className="px-2 py-1 rounded border text-sm bg-gray-100 hover:bg-gray-200 text-gray-800"
     >
       {children}
     </button>

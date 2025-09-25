@@ -150,11 +150,9 @@ export default function EditPostPage({
         </select>
         <input
           name="image"
+          type="hidden"
           value={form.image}
-          onChange={handleChange}
-          placeholder="URL de imagen"
-          readOnly
-          className="w-full border p-2 rounded cursor-not-allowed"
+          readOnly          
         />
         <input
           name="excerpt"
