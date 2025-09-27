@@ -86,28 +86,34 @@ export default function RootLayout({
         `}
         </Script>
 
-        {process.env.NODE_ENV === "production" && (
-          <>
-            <Script
-              id="cookieyes"
-              src="https://cdn-cookieyes.com/client_data/8eefd0d2385ccb3becdf9718/script.js"
-              strategy="lazyOnload"
-            />
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=G-T1ZKQDYNZZ`}
-              strategy="lazyOnload"
-              defer
-            />
-            <Script id="ga-init" strategy="afterInteractive">
-              {`
+        {/* Script de AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5063066587377461"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
+        <Script
+          id="cookieyes"
+          src="https://cdn-cookieyes.com/client_data/8eefd0d2385ccb3becdf9718/script.js"
+          strategy="lazyOnload"
+        />
+
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-T1ZKQDYNZZ`}
+          strategy="lazyOnload"
+          defer
+        />
+
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', 'G-T1ZKQDYNZZ');
               `}
-            </Script>
-          </>
-        )}
+        </Script>
       </head>
 
       <body className={"bg-gray-50 text-gray-800"} suppressHydrationWarning>

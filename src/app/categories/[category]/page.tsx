@@ -22,7 +22,7 @@ export async function generateMetadata({
 
   const { data: category } = await supabase
     .from("categories")
-    .select("name, slug")
+    .select("name, slug, description")
     .eq("slug", categorySlug)
     .single();
 
@@ -80,7 +80,7 @@ export default async function CategoryPage(props: any) {
 
   const { data: category, error } = await supabase
     .from("categories")
-    .select("name, slug")
+    .select("name, slug, description")
     .eq("slug", categorySlug)
     .single();
 
@@ -114,11 +114,13 @@ export default async function CategoryPage(props: any) {
         </Link>
       </h1>
 
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
-        <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
+      <h2 className="mb-8">{category.description}</h2>
+
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
+        <Link href="/contacto">
           <Image
-            src="/ads/fintual.png"
-            alt="Fintual - La mejor decisión para tu plata. Tus inversiones reguladas"
+            src="/ads/publica.png"
+            alt="¿Quieres colabrar o proponer un tema?, escríbenos"
             width={900}
             height={185}
             quality={75}
@@ -177,7 +179,7 @@ export default async function CategoryPage(props: any) {
         </div>
       )}
 
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+      {/* <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
         <Link href="https://mpago.li/1yh1MCv" target="_blank">
           <Image
             src="/ads/mercadopago.png"
@@ -189,7 +191,7 @@ export default async function CategoryPage(props: any) {
             className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
           />
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 }

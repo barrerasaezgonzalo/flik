@@ -70,11 +70,11 @@ export default async function HomePage({
       </h1>
 
       {/* Anuncio superior */}
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
-        <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+        <Link href="/mapa?modo=categorias">
           <Image
-            src="/ads/fintual.png"
-            alt="Fintual - La mejor decisión para tu plata. Tus inversiones reguladas"
+            src="/ads/categorias-destacadas.png"
+            alt="Categorías destacadas"
             width={900}
             height={185}
             quality={75}
@@ -131,10 +131,10 @@ export default async function HomePage({
 
       {/* Anuncio inferior */}
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
-        <Link href="https://mpago.li/1yh1MCv" target="_blank">
+        <Link href="/contacto">
           <Image
-            src="/ads/mercadopago.png"
-            alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
+            src="/ads/publica.png"
+            alt="¿Quieres colabrar o proponer un tema?, escríbenos"
             width={900}
             height={185}
             quality={75}

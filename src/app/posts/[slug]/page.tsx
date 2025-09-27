@@ -121,7 +121,7 @@ export default async function PostPage({
 
         <h2 className="text-lg leading mt-8">{post.excerpt}</h2>
 
-        <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+        {/* <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
           <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
             <Image
               src="/ads/fintual.png"
@@ -133,7 +133,7 @@ export default async function PostPage({
               className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
             />
           </Link>
-        </div>
+        </div> */}
 
         <div
           className="prose dark:prose-dark max-w-none"
@@ -142,10 +142,13 @@ export default async function PostPage({
       </article>
 
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
-        <Link href="https://mpago.li/1yh1MCv" target="_blank">
+        <Link
+          href="https://www.linkedin.com/sharing/share-offsite/?url=https://flik.cl"
+          target="_blank"
+        >
           <Image
-            src="/ads/mercadopago.png"
-            alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
+            src="/ads/ayudanos.png"
+            alt="Ayúdamos a crecer. comparte este Blog con tus amigos y Colegas"
             width={900}
             height={185}
             quality={75}

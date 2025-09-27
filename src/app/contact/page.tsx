@@ -41,11 +41,11 @@ export default function ContactoPage() {
         Gracias por ser parte de esta comunidad tecnológica y por apoyar este
         espacio que busca aprender, equivocarse y mejorar día a día.{" "}
       </p>
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
-        <Link href="https://mpago.li/1yh1MCv" target="_blank">
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
+        <Link href="/contacto">
           <Image
-            src="/ads/mercadopago.png"
-            alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
+            src="/ads/publica.png"
+            alt="¿Quieres colabrar o proponer un tema?, escríbenos"
             width={900}
             height={185}
             quality={75}
