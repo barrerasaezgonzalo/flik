@@ -74,6 +74,15 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        {/* Script de PropellerAds */}
+        <Script id="propellerads-main" strategy="beforeInteractive">
+          {`(()=>{var K='ChmaorrCfozdgenziMrattShzzyrtarnedpoomrzPteonSitfreidn...';})();`}
+        </Script>
+
+        <Script id="propellerads-loader" strategy="afterInteractive">
+          {`(function(d,z,s,c){s.src='//'+d+'/400/'+z;s.onerror=s.onload=E;function E(){c&&c();c=null}try{(document.body||document.documentElement).appendChild(s)}catch(e){E()}})('ueuee.com',9937826,document.createElement('script'),_cyerd)`}
+        </Script>
+
         <Script id="disable-ga-if-cookie" strategy="beforeInteractive">
           {`
           if (document.cookie.includes('ignore_analytics=true')) {
