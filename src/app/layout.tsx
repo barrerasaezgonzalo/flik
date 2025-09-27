@@ -74,15 +74,7 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-
-        <Script
-          src="https://fpyf8.com/88/tag.min.js"
-          data-zone="174043"
-          async
-          data-cfasync="false"
-          strategy="beforeInteractive"
-        />
-
+        
         <Script id="disable-ga-if-cookie" strategy="beforeInteractive">
           {`
           if (document.cookie.includes('ignore_analytics=true')) {
