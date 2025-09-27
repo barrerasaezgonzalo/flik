@@ -14,12 +14,16 @@ export default function MiniEditor({
   onChange: (html: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [showHtml, setShowHtml] = useState(false);
+  const [htmlContent, setHtmlContent] = useState(value);
 
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         bulletList: { keepMarks: true, keepAttributes: false },
+        code: false,
+        link: false,
       }),
       Code,
       Link.configure({
@@ -29,19 +33,31 @@ export default function MiniEditor({
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
     ],
-    content: value || "",
+    content: value,
     editorProps: {
       attributes: {
         class:
           "min-h-[160px] w-full rounded border p-3 focus:outline-none prose prose-sm max-w-none",
       },
     },
-    onUpdate: ({ editor }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onUpdate: ({ editor }: any) => {
       onChange(editor.getHTML());
     },
   });
 
   if (!editor) return null;
+
+  const handleShowHtml = () => {
+    setHtmlContent(editor.getHTML());
+    setShowHtml(true);
+  };
+
+  const handleSaveHtml = () => {
+    editor.commands.setContent(htmlContent);
+    onChange(htmlContent);
+    setShowHtml(false);
+  };
 
   return (
     <div className="space-y-2">
@@ -64,26 +80,39 @@ export default function MiniEditor({
         >
           🔗
         </Button>
-
         <Button onClick={() => editor.chain().focus().unsetLink().run()}>
           ❌🔗
         </Button>
         <Button onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
           {"</>"}
         </Button>
+        <Button onClick={handleShowHtml}>📝 HTML</Button>
         <Button onClick={() => setExpanded(true)}>Expandir</Button>
       </div>
 
-      {!expanded && (
+      {!expanded && !showHtml && (
         <EditorContent
           editor={editor}
           className="prose prose-sm max-w-none text-white"
         />
       )}
 
+      {showHtml && (
+        <div className="space-y-2">
+          <textarea
+            value={htmlContent}
+            onChange={(e) => setHtmlContent(e.target.value)}
+            className="w-full h-40 border rounded p-2 font-mono text-sm"
+          />
+          <div className="flex gap-2">
+            <Button onClick={handleSaveHtml}>Guardar HTML</Button>
+            <Button onClick={() => setShowHtml(false)}>Volver al editor</Button>
+          </div>
+        </div>
+      )}
+
       {expanded && (
         <div className="fixed inset-0 z-50 bg-black flex flex-col">
-          {/* Barra de herramientas */}
           <div className="p-2 border-b bg-black flex justify-between items-center shadow">
             <div className="flex gap-2">
               <Button onClick={() => editor.chain().focus().toggleBold().run()}>
@@ -94,7 +123,7 @@ export default function MiniEditor({
                   const url = prompt("Ingresa la URL");
                   if (url) {
                     editor
-                      .chain()
+                      ?.chain()
                       .focus()
                       .extendMarkRange("link")
                       .setLink({ href: url })
@@ -104,7 +133,6 @@ export default function MiniEditor({
               >
                 🔗
               </Button>
-
               <Button onClick={() => editor.chain().focus().unsetLink().run()}>
                 ❌🔗
               </Button>
@@ -113,16 +141,35 @@ export default function MiniEditor({
               >
                 {"</>"}
               </Button>
+              <Button onClick={handleShowHtml}>📝 HTML</Button>
             </div>
             <Button onClick={() => setExpanded(false)}>Cerrar</Button>
           </div>
 
-          {/* Área del editor */}
           <div className="flex-1 overflow-auto p-4 bg-black">
-            <EditorContent
-              editor={editor}
-              className="prose prose-sm max-w-none text-white"
-            />
+            {!showHtml ? (
+              <EditorContent
+                editor={editor}
+                className="prose prose-sm max-w-none text-white"
+              />
+            ) : (
+              <div className="space-y-2">
+                <textarea
+                  role="textbox"
+                  value={htmlContent}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setHtmlContent(e.target.value)
+                  }
+                  className="w-full h-40 border rounded p-2 font-mono text-sm"
+                />
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveHtml}>Guardar HTML</Button>
+                  <Button onClick={() => setShowHtml(false)}>
+                    Volver al editor
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
