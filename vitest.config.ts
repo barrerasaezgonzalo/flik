@@ -18,7 +18,6 @@ export default defineConfig({
       "coverage/**",
       "public/**",
     ],
-
     coverage: {
       include: [
         "src/lib/**/*.{ts,tsx}",

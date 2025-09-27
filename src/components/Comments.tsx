@@ -71,7 +71,7 @@ export default function Comments({
   };
 
   return (
-    <section className="border-t pt-8 mt-12" aria-labelledby="formTitle">
+    <section className="border-t pt-8 mt-8" aria-labelledby="formTitle">
       <h2 className="text-2xl font-bold mb-4 sr-only" id="formTitle">
         Comentarios ({initialComments.length})
       </h2>

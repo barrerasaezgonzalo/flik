@@ -7,6 +7,8 @@ import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import * as Sentry from "@sentry/nextjs";
+import { TrackView } from "@/components/TrackView";
+import { getViews } from "@/lib/getViews";
 
 export async function generateMetadata({
   params,
@@ -58,6 +60,7 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const views = await getViews(slug);
   const post = await getPostBySlug(slug);
   if (!post) {
     Sentry.captureMessage("❌ Post no encontrado", {
@@ -137,6 +140,10 @@ export default async function PostPage({
           />
         </Link>
       </div>
+
+      <TrackView slug={slug} />
+      <p className="text-sm text-gray-500 mt-4">👁️ {views} visitas</p>
+
       <Comments postId={post.id} initialComments={comments} />
 
       {relatedPosts.length > 0 && (
