@@ -74,10 +74,10 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        
+
         <Script id="disable-ga-if-cookie" strategy="beforeInteractive">
           {`
-          if (document.cookie.includes('ignore_analytics=true')) {
+          if (document.cookie.includes('ignore_tracking=true')) {
             window['ga-disable-G-T1ZKQDYNZZ'] = true;
           }
         `}
@@ -97,11 +97,11 @@ export default function RootLayout({
             />
             <Script id="ga-init" strategy="afterInteractive">
               {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-T1ZKQDYNZZ');
-        `}
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-T1ZKQDYNZZ');
+              `}
             </Script>
           </>
         )}
