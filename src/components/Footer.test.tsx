@@ -47,6 +47,6 @@ describe("Footer component", () => {
   it("muestra el año actual", () => {
     render(<Footer />);
     const year = new Date().getFullYear().toString();
-    expect(screen.getByText(new RegExp(`© ${year} Flik`))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`© ${year}`))).toBeInTheDocument();
   });
 });

@@ -6,7 +6,7 @@ exports[`Header snapshots > match snapshot render 1`] = `
     class="bg-white shadow-sm border-b border-green-600"
   >
     <div
-      class="container mx-auto flex justify-between items-center max-w-4xl px-4 py-2"
+      class="container mx-auto flex justify-between items-center max-w-4xl px-4 "
     >
       <div
         class="text-2xl font-bold text-black flex items-center"
@@ -16,63 +16,97 @@ exports[`Header snapshots > match snapshot render 1`] = `
         >
           <img
             alt="Flik Blog"
-            class="w-16 h-16 object-contain"
-            height="80"
+            class="w-25 h-25 object-contain"
+            height="100"
             src="/logo.png"
-            width="80"
+            width="100"
           />
         </a>
       </div>
       <button
         aria-label="Abrir menú"
-        class="sm:hidden text-2xl text-black cursor-pointer"
+        class="md:hidden text-2xl text-black cursor-pointer"
       >
-        ☰
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-menu w-7 h-7"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4 5h16"
+          />
+          <path
+            d="M4 12h16"
+          />
+          <path
+            d="M4 19h16"
+          />
+        </svg>
       </button>
       <nav
-        class="hidden sm:flex sm:items-center sm:space-x-6"
+        class="hidden md:flex md:items-center md:space-x-6"
       >
         <ul
-          class="flex gap-4"
+          class="flex"
         >
           <li>
             <a
-              class="text-black hover:text-green-600 transition-colors"
+              class="text-sm border-t border-b border-r border-black inline-block text-black  hover:text-green-600 px-[20px] py-[10px]"
               href="/"
             >
-              📝 Posts
+              Posts
             </a>
           </li>
           <li>
             <a
-              class="text-black hover:text-green-600 transition-colors"
+              class="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px]"
               href="/about"
             >
-              🚀 Sobre Flik
+              Sobre Flik
             </a>
           </li>
           <li>
             <a
-              class="text-black hover:text-green-600 transition-colors"
+              class="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px]"
               href="/mapa?modo=categorias"
             >
-              🔖 Categorías
+              Categorías
             </a>
           </li>
           <li>
             <a
-              class="text-black hover:text-green-600 transition-colors"
+              class="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px]"
               href="/contact"
             >
-              📞 Contacto
+              Contacto
             </a>
           </li>
+          <li
+            class="text-sm"
+          >
+            <button
+              aria-controls="site-search"
+              aria-expanded="false"
+              class="cursor-pointer border-t border-b border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px] focus:outline-none"
+              type="button"
+            >
+              Buscar
+            </button>
+          </li>
         </ul>
-        <div
-          data-testid="mock-search"
-        />
       </nav>
     </div>
+    <div
+      data-testid="mock-search"
+    />
   </header>
 </div>
 `;

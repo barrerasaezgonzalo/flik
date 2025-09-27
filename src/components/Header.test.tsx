@@ -9,6 +9,7 @@ vi.mock("./Search", () => ({
 }));
 
 vi.mock("next/link", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default: ({ children, href, ...props }: any) => (
     <a href={href} {...props}>
       {children}
@@ -56,7 +57,7 @@ describe("Header component", () => {
     expect(screen.getByTestId("mobile-menu")).toBeInTheDocument();
   });
 
-  it.each(["📝 Posts", "🚀 Sobre Flik", "🔖 Categorías", "📞 Contacto"])(
+  it.each(["Posts", "Sobre Flik", "Categorías", "Contacto"])(
     "cierra el menú al hacer click en %s",
     (linkText) => {
       render(<Header />);

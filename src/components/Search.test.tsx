@@ -17,26 +17,28 @@ describe("Search component", () => {
   });
 
   it("renderiza input y botón", () => {
-    render(<Search />);
+    render(<Search openSearch={false} />);
     expect(screen.getByRole("textbox")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /buscar/i })).toBeInTheDocument();
   });
 
   it("no navega si el input está vacío", () => {
-    render(<Search />);
+    render(<Search openSearch={false} />);
     const form =
       screen.getByRole("form") || screen.getByRole("button").closest("form")!;
     fireEvent.submit(form);
     expect(pushMock).not.toHaveBeenCalled();
   });
 
-  it("navega a la ruta correcta cuando se escribe y se envía", () => {
-    render(<Search />);
-    const input = screen.getByRole("textbox");
-    const button = screen.getByRole("button", { name: /buscar/i });
+  it("navega a la ruta correcta cuando se escribe y se presiona Enter", () => {
+    render(<Search openSearch={true} />);
 
+    const input = screen.getByRole("textbox");
+
+    // Escribir "nextjs"
     fireEvent.change(input, { target: { value: "nextjs" } });
-    fireEvent.click(button);
+
+    // Simular enviar el formulario (Enter)
+    fireEvent.submit(input.closest("form")!);
 
     expect(pushMock).toHaveBeenCalledWith("/search?q=nextjs");
   });

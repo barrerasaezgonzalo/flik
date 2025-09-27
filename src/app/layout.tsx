@@ -5,6 +5,7 @@ import "./globals.css";
 import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GlobalLoading from "@/components/GlobalLoading";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -117,6 +118,7 @@ export default function RootLayout({
       </head>
 
       <body className={"bg-gray-50 text-gray-800"} suppressHydrationWarning>
+        <GlobalLoading />
         <div className="min-h-screen flex flex-col">
           <Header />
           <main className="flex-grow container mx-auto px-4 py-6 sm:py-8">

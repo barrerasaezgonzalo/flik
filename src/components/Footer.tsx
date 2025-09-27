@@ -17,7 +17,9 @@ export default function Footer() {
               className="w-12 h-auto"
             />
           </Link>
-          <p className="text-gray-600 pt-2">Blog de tecnología en español</p>
+          <p className="text-gray-600 pt-2">
+            Blog de tecnología en español © {new Date().getFullYear()}{" "}
+          </p>
         </div>
 
         {/* Links */}
@@ -46,10 +48,6 @@ export default function Footer() {
           </a>
         </nav>
       </div>
-
-      <p className="mt-4 text-center text-xs text-gray-700">
-        © {new Date().getFullYear()} Flik
-      </p>
     </footer>
   );
 }

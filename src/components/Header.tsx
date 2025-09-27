@@ -4,121 +4,143 @@ import Link from "next/link";
 import Image from "next/image";
 import Search from "./Search";
 import React, { useState } from "react";
+import {
+  X,
+  Menu,
+  Rss,
+  CircleQuestionMark,
+  BookOpenCheck,
+  AtSign,
+} from "lucide-react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [openSearch, setOpenSearch] = useState(false);
 
   return (
     <header className="bg-white shadow-sm border-b border-green-600">
-      <div className="container mx-auto flex justify-between items-center max-w-4xl px-4 py-2">
+      <div className="container mx-auto flex justify-between items-center max-w-4xl px-4 ">
         {/* Logo */}
         <div className="text-2xl font-bold text-black flex items-center">
           <Link href="/">
             <Image
               src="/logo.png"
               alt="Flik Blog"
-              width={80}
-              height={80}
-              className="w-16 h-16 object-contain"
+              width={100}
+              height={100}
+              className="w-25 h-25 object-contain"
             />
           </Link>
         </div>
 
         {/* Botón hamburguesa en mobile */}
         <button
-          className="sm:hidden text-2xl text-black cursor-pointer"
+          className="md:hidden text-2xl text-black cursor-pointer"
           onClick={() => setOpen(!open)}
           aria-label="Abrir menú"
         >
-          {open ? "❌" : "☰"}
+          {open ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
         </button>
 
         {/* Nav en desktop */}
-        <nav className="hidden sm:flex sm:items-center sm:space-x-6">
-          <ul className="flex gap-4">
+        <nav className="hidden md:flex md:items-center md:space-x-6">
+          <ul className="flex">
             <li>
+              {/* inline-block bg-black text-white p-[10px] rounded hover:bg-green-600 */}
               <Link
                 href="/"
-                className="text-black hover:text-green-600 transition-colors"
+                className="text-sm border-t border-b border-r border-black inline-block text-black  hover:text-green-600 px-[20px] py-[10px]"
               >
-                📝 Posts
+                Posts
               </Link>
             </li>
             <li>
               <Link
                 href="/about"
-                className="text-black hover:text-green-600 transition-colors"
+                className="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px]"
               >
-                🚀 Sobre Flik
+                Sobre Flik
               </Link>
             </li>
             <li>
               <Link
                 href="/mapa?modo=categorias"
-                className="text-black hover:text-green-600 transition-colors"
+                className="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px]"
               >
-                🔖 Categorías
+                Categorías
               </Link>
             </li>
             <li>
               <Link
                 href="/contact"
-                className="text-black hover:text-green-600 transition-colors"
+                className="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px]"
               >
-                📞 Contacto
+                Contacto
               </Link>
             </li>
+            <li className="text-sm">
+              <button
+                type="button"
+                onClick={() => setOpenSearch((v) => !v)}
+                aria-expanded={openSearch}
+                aria-controls="site-search"
+                className="cursor-pointer border-t border-b border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px] focus:outline-none"
+              >
+                Buscar
+              </button>
+            </li>
           </ul>
-          <Search />
         </nav>
       </div>
-
+      {<Search openSearch={openSearch} />}
       {/* Menú desplegable en mobile */}
       {open && (
         <div
           data-testid="mobile-menu"
-          className="sm:hidden bg-white border-t border-gray-200 px-4 py-3"
+          className="md:hidden bg-white border-t border-gray-200 px-4 py-3"
         >
           <ul className="flex flex-col gap-3">
-            <li>
+            <li className="border-b border-gray-200 py-2">
               <Link
                 href="/"
-                className="block text-black hover:text-green-600 transition-colors"
+                className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                📝 Posts
+                <Rss className="w-7 h-7" /> <p className="ml-4"> Posts</p>
               </Link>
             </li>
-            <li>
+            <li className="border-b border-gray-200 py-2">
               <Link
                 href="/about"
-                className="block text-black hover:text-green-600 transition-colors"
+                className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                🚀 Sobre Flik
+                <CircleQuestionMark className="w-7 h-7" />{" "}
+                <p className="ml-4"> Sobre Flik</p>
               </Link>
             </li>
-            <li>
+            <li className="border-b border-gray-200 py-2">
               <Link
                 href="/mapa?modo=categorias"
-                className="block text-black hover:text-green-600 transition-colors"
+                className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                🔖 Categorías
+                <BookOpenCheck className="w-7 h-7" />{" "}
+                <p className="ml-4"> Categorías</p>
               </Link>
             </li>
-            <li>
+            <li className="border-b border-gray-200 py-2">
               <Link
                 href="/contact"
-                className="block text-black hover:text-green-600 transition-colors"
+                className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                📞 Contacto
+                <AtSign className="w-7 h-7" /> <p className="ml-4"> Contacto</p>
               </Link>
             </li>
           </ul>
           <div className="mt-3">
-            <Search />
+            <Search openSearch={true} onClose={() => setOpen(false)} />
           </div>
         </div>
       )}
