@@ -13,7 +13,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://flik.cl"),
-  title: "Flik - Blog de tecnología y desarrollo",
+  title: {
+    default: "Blog de tecnología en español",
+    template: "%s | Blog de tecnología en español",
+  },
   description:
     "Flik es un blog de tecnología en español con artículos sobre desarrollo, IA, seguridad, herramientas y experiencias reales.",
   alternates: {
@@ -24,7 +27,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: "Flik - Blog de tecnología y desarrollo",
+    title: "Blog de tecnología en español",
     description:
       "Flik es un blog de tecnología en español con artículos sobre desarrollo, IA, seguridad, herramientas y experiencias reales.",
     url: "https://flik.cl",
@@ -107,7 +110,7 @@ export default function RootLayout({
         )}
       </head>
 
-      <body className={"bg-gray-50 text-gray-800"}>
+      <body className={"bg-gray-50 text-gray-800"} suppressHydrationWarning>
         <div className="min-h-screen flex flex-col">
           <Header />
           <main className="flex-grow container mx-auto px-4 py-6 sm:py-8">

@@ -22,16 +22,11 @@ exports[`Footer snapshots > match snapshot render 1`] = `
             src="/logo.png"
             width="48"
           />
-          <span
-            class="font-semibold text-gray-800"
-          >
-            Flik
-          </span>
         </a>
         <p
-          class="text-gray-600"
+          class="text-gray-600 pt-2"
         >
-          Un blog de tecnología aleatoria
+          Blog de tecnología en español
         </p>
       </div>
       <nav

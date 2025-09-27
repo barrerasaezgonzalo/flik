@@ -20,13 +20,13 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: "Flik - Un blog random de tecnología",
-      description: "Contenido aleatorio sobre tecnología",
+      title: "Flik - Blog de tecnología en español",
+      description: "Blog de tecnología en español",
     };
   }
 
   return {
-    title: post.title,
+    title: post.title + " | Blog de tecnología en español",
     description: post.excerpt,
     openGraph: {
       title: post.title,
@@ -88,12 +88,26 @@ export default async function PostPage({
             <span className="mx-2">•</span>
             <span>{formatDate(post.date)}</span>
           </div>
+          <div className="text-sm mb-4 mt-4">
+            <Link href="/" className="hover:text-green-600">
+              Inicio
+            </Link>
+            <span className="mx-2">/</span>
+            <Link
+              href={`/categories/${post.category?.slug ?? ""}`}
+              className="hover:text-green-600"
+            >
+              {post.category?.name ?? "Categoría"}
+            </Link>
+            <span className="mx-2">/</span>
+            <span className="font-medium">{post.title}</span>
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mt-8">
             {post.title}
           </h1>
         </header>
 
-        <div className="w-full mb-8 rounded-lg overflow-hidden bg-gray-200">
+        <div className="w-full mb-8 rounded-lg overflow-hidden bg-gray-200 border border-black">
           <Image
             src={post.image}
             alt={post.title}
@@ -105,7 +119,7 @@ export default async function PostPage({
           />
         </div>
 
-        <h2 className="text-lg text-white leading mt-8">{post.excerpt}</h2>
+        <h2 className="text-lg leading mt-8">{post.excerpt}</h2>
 
         <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
           <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">

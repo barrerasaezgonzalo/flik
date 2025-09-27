@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getPostsByCategory } from "@/lib/posts";
@@ -12,6 +13,66 @@ export const revalidate = 0;
 
 const PAGE_SIZE = 15;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: { category: string };
+}): Promise<Metadata> {
+  const { category: categorySlug } = params;
+
+  const { data: category } = await supabase
+    .from("categories")
+    .select("name, slug")
+    .eq("slug", categorySlug)
+    .single();
+
+  if (!category) {
+    return {
+      title: "Categoría no encontrada | Blog de tecnología en español",
+      description: "Esta categoría no existe en Flik.",
+      openGraph: {
+        title: "Categoría no encontrada | Blog de tecnología en español",
+        description: "Esta categoría no existe en Flik.",
+        url: `https://flik.cl/categories/${categorySlug}`,
+        siteName: "Flik Blog",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Categoría no encontrada | Blog de tecnología en español",
+        description: "Esta categoría no existe en Flik.",
+      },
+    };
+  }
+
+  return {
+    title: `${category.name} | Blog de tecnología en español`,
+    description: `Artículos sobre ${category.name} en Flik.`,
+    openGraph: {
+      title: `${category.name} | Blog de tecnología en español`,
+      description: `Artículos sobre ${category.name} en Flik.`,
+      url: `https://flik.cl/categories/${category.slug}`,
+      siteName: "Flik Blog",
+      images: [
+        {
+          url: "https://flik.cl/og_logo.png",
+          width: 1200,
+          height: 630,
+          alt: "Flik Blog",
+        },
+      ],
+      locale: "es_CL",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${category.name} | Blog de tecnología en español`,
+      description: `Artículos sobre ${category.name} en Flik.`,
+      images: ["https://flik.cl/og_logo.png"],
+    },
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function CategoryPage(props: any) {
   const { category: categorySlug } = props.params;
@@ -19,7 +80,7 @@ export default async function CategoryPage(props: any) {
 
   const { data: category, error } = await supabase
     .from("categories")
-    .select("name")
+    .select("name, slug")
     .eq("slug", categorySlug)
     .single();
 
@@ -48,7 +109,9 @@ export default async function CategoryPage(props: any) {
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
-        Categoría: <span className="text-green-600">{category.name}</span>
+        <Link href={`/categories/${category.slug}`}>
+          <span className="text-green-600">{category.name}</span>
+        </Link>
       </h1>
 
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">

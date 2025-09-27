@@ -11,9 +11,8 @@ describe("Footer component", () => {
 
   it("muestra el nombre y la descripción", () => {
     render(<Footer />);
-    expect(screen.getByText("Flik")).toBeInTheDocument();
     expect(
-      screen.getByText(/un blog de tecnología aleatoria/i),
+      screen.getByText(/Blog de tecnología en español/i),
     ).toBeInTheDocument();
   });
 

@@ -19,7 +19,7 @@ describe("Search component", () => {
   it("renderiza input y botón", () => {
     render(<Search />);
     expect(screen.getByRole("textbox")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /search/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /buscar/i })).toBeInTheDocument();
   });
 
   it("no navega si el input está vacío", () => {
@@ -33,7 +33,7 @@ describe("Search component", () => {
   it("navega a la ruta correcta cuando se escribe y se envía", () => {
     render(<Search />);
     const input = screen.getByRole("textbox");
-    const button = screen.getByRole("button", { name: /search/i });
+    const button = screen.getByRole("button", { name: /buscar/i });
 
     fireEvent.change(input, { target: { value: "nextjs" } });
     fireEvent.click(button);

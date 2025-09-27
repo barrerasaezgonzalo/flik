@@ -32,8 +32,10 @@ async function SearchResultsComponent({ query }: { query: string }) {
           />
         ))
       ) : (
-        <p className="text-gray-600 text-center">
-          No posts found for your search.
+        <p className="text-white text-xl text-center">
+          Lo sentimos, no encontramos nada con ese término de búsqueda. Pero no
+          te vayas 👀, en Flik tenemos artículos sobre programación, IA,
+          seguridad y mucho más.
         </p>
       )}
     </div>
@@ -63,7 +65,7 @@ export default async function SearchPage({
         </Link>
       </div>
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
-        Search Results for: <span className="text-green-600">{query}</span>
+        Resultados para: <span className="text-green-600">{query}</span>
       </h1>
       <Suspense fallback={<p>Loading search results...</p>}>
         <SearchResults query={query} />

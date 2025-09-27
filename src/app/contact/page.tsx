@@ -1,6 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contacto | Blog de tecnología en español",
+  description: "Ponte en contacto con Flik. Blog de tecnología en español.",
+};
+
 export default function ContactoPage() {
   return (
     <div className="max-w-4xl mx-auto prose prose-lg">

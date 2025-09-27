@@ -5,27 +5,57 @@ import { getPaginatedItems } from "@/lib/utils";
 import PostListItem from "@/components/PostListItem";
 import Image from "next/image";
 import { Post } from "@/types";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 const PAGE_SIZE = 15;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: { page?: string };
+}): Promise<Metadata> {
+  const rawPage = searchParams?.page;
+  const page = rawPage && /^\d+$/.test(rawPage) ? parseInt(rawPage, 10) : 1;
+
+  return {
+    title:
+      page > 1
+        ? `Todos los posts (Página ${page}) | Blog de tecnología en español`
+        : `Todos los posts | Blog de tecnología en español`,
+    description:
+      "Listado completo de artículos y publicaciones en Flik, blog de tecnología en español.",
+    alternates: {
+      canonical: "https://flik.cl/posts",
+    },
+  };
+}
 
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+  searchParams?: { page?: string };
 }) {
-  const params = await searchParams; // 👈 lo resolvemos
+  const rawPage = searchParams?.page;
+  const page = rawPage && /^\d+$/.test(rawPage) ? parseInt(rawPage, 10) : 1;
 
   const posts = await getPosts();
-  const page = parseInt((params?.page as string) || "1", 10);
-
   const { items: visiblePosts, totalPages } = getPaginatedItems(
     posts,
     page,
     PAGE_SIZE,
   );
-  const commentCounts: Record<string, number> = {};
 
-  // Get comment counts for all visible posts
+  // 🚨 Validación de parámetros inválidos
+  if (
+    (rawPage && !/^\d+$/.test(rawPage)) || // ej: ?page=a
+    page < 1 ||
+    page > totalPages
+  ) {
+    notFound();
+  }
+
+  const commentCounts: Record<string, number> = {};
   await Promise.all(
     visiblePosts.map(async (post: Post) => {
       const comments = await getCommentsByPostId(post.id);
@@ -34,14 +64,13 @@ export default async function HomePage({
   );
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <section className="mb-10 text-center text-white max-w-2xl mx-auto">
-        <h1 className="text-4xl font-semibold mb-4">
-          Flik: un blog de tecnología en español
-        </h1>
-      </section>
+    <div className="max-w-4xl mx-auto prose prose-lg">
+      <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
+        Blog de tecnología en español
+      </h1>
 
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+      {/* Anuncio superior */}
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
         <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
           <Image
             src="/ads/fintual.png"
@@ -55,6 +84,7 @@ export default async function HomePage({
         </Link>
       </div>
 
+      {/* Posts */}
       <div className="space-y-8">
         {visiblePosts.map((post, index) => (
           <PostListItem
@@ -99,7 +129,8 @@ export default async function HomePage({
         )}
       </div>
 
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+      {/* Anuncio inferior */}
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
         <Link href="https://mpago.li/1yh1MCv" target="_blank">
           <Image
             src="/ads/mercadopago.png"

@@ -16,9 +16,8 @@ export default function Footer() {
               height={48}
               className="w-12 h-auto"
             />
-            <span className="font-semibold text-gray-800">Flik</span>
           </Link>
-          <p className="text-gray-600">Un blog de tecnología aleatoria</p>
+          <p className="text-gray-600 pt-2">Blog de tecnología en español</p>
         </div>
 
         {/* Links */}

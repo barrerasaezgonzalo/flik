@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Política de Privacidad | Blog de tecnología en español",
+  description:
+    "Lee la política de privacidad de Flik y cómo protegemos tu información. Blog de tecnología en español.",
+};
+
 export default async function privacyPage() {
   return (
     <div className="max-w-4xl mx-auto prose prose-lg">

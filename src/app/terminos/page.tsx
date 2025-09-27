@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Términos y Condiciones | Blog de tecnología en español",
+  description:
+    "Consulta los términos y condiciones de uso de Flik, un blog de tecnología en español.",
+};
+
 export default function TerminosPage() {
   return (
     <div className="max-w-4xl mx-auto prose prose-lg">

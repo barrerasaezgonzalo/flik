@@ -1,6 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 
+export const metadata = {
+  title: "Sobre Flik | Blog de tecnología en español",
+  description:
+    "Conoce la historia de Flik, un blog de tecnología en español con artículos sobre programación, inteligencia artificial, seguridad y más.",
+};
+
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto prose prose-lg">

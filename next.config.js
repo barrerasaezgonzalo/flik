@@ -9,10 +9,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    legacyBrowsers: false,
+  async redirects() {
+    return [
+      {
+        source: "/posts",
+        destination: "/",
+        permanent: true,
+      },
+    ];
   },
-  optimizeCss: true,
   async headers() {
     return [
       {
