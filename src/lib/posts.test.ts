@@ -5,6 +5,7 @@ import {
   searchPosts,
   getRelatedPosts,
   getCategories,
+  getAdjacentPosts,
 } from "./posts";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import * as Sentry from "@sentry/nextjs";
@@ -526,5 +527,106 @@ describe("posts lib", () => {
 
     // ✅ fuerza a entrar al branch del "?? { slug: '', name: '' }"
     expect(result[0].category).toEqual({ slug: "", name: "" });
+  });
+
+  it("getAdjacentPosts devuelve prev y next", async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === "posts") {
+        return {
+          select: () => ({
+            order: () =>
+              Promise.resolve({
+                data: [
+                  { id: "1", slug: "p1", category_id: "c1" },
+                  { id: "2", slug: "p2", category_id: "c2" },
+                  { id: "3", slug: "p3", category_id: "c3" },
+                ],
+                error: null,
+              }),
+          }),
+        };
+      }
+      if (table === "categories") {
+        return {
+          select: () =>
+            Promise.resolve({
+              data: [
+                { id: "c1", slug: "tech", name: "Tech" },
+                { id: "c2", slug: "life", name: "Life" },
+                { id: "c3", slug: "travel", name: "Travel" },
+              ],
+              error: null,
+            }),
+        };
+      }
+    });
+
+    const result = await getAdjacentPosts("p2");
+    expect(result?.prev?.slug).toBe("p1");
+    expect(result?.next?.slug).toBe("p3");
+  });
+
+  it("getAdjacentPosts devuelve prev y next null si no hay data", async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === "posts") {
+        return {
+          select: () => ({
+            order: () =>
+              Promise.resolve({
+                data: null,
+                error: null,
+              }),
+          }),
+        };
+      }
+    });
+
+    const result = await getAdjacentPosts("cualquier-slug");
+    expect(result).toEqual({ prev: null, next: null });
+  });
+  it("devuelve prev null cuando es el primer post", async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === "posts") {
+        return {
+          select: () => ({
+            order: () =>
+              Promise.resolve({
+                data: [
+                  { id: "1", slug: "p1", category_id: "c1" },
+                  { id: "2", slug: "p2", category_id: "c2" },
+                ],
+                error: null,
+              }),
+          }),
+        };
+      }
+    });
+
+    const result = await getAdjacentPosts("p1");
+    expect(result.prev).toBeNull();
+    expect(result.next?.slug).toBe("p2");
+  });
+
+  it("devuelve next null cuando es el último post", async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === "posts") {
+        return {
+          select: () => ({
+            order: () =>
+              Promise.resolve({
+                data: [
+                  { id: "1", slug: "p1", category_id: "c1" },
+                  { id: "2", slug: "p2", category_id: "c2" },
+                ],
+                error: null,
+              }),
+          }),
+        };
+      }
+    });
+
+    const result = await getAdjacentPosts("p2");
+    expect(result.prev?.slug).toBe("p1");
+    expect(result.next).toBeNull();
   });
 });

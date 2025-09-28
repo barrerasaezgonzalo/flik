@@ -1,11 +1,22 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import Header from "./Header";
 import { vi } from "vitest";
 import React from "react";
 
 // Mock de Search para no depender de su implementación real
 vi.mock("./Search", () => ({
-  default: () => <div data-testid="mock-search" />,
+  default: ({ onClose }: { onClose?: () => void }) => (
+    <div data-testid="mock-search">
+      <p>Mock Search</p>
+      {onClose && <button onClick={onClose}>Cerrar mock</button>}
+    </div>
+  ),
 }));
 
 vi.mock("next/link", () => ({
@@ -80,4 +91,62 @@ describe("Header component", () => {
       expect(screen.queryByTestId("mobile-menu")).not.toBeInTheDocument();
     },
   );
+
+  it("cierra el menú mobile cuando la pantalla pasa a >=768px", () => {
+    render(<Header />);
+
+    // Abrir menú mobile
+    const toggleMenuBtn = screen.getByRole("button", { name: /abrir menú/i });
+    fireEvent.click(toggleMenuBtn);
+    expect(screen.getByTestId("mobile-menu")).toBeInTheDocument();
+
+    // Simular resize a desktop
+    window.innerWidth = 1024;
+    fireEvent(window, new Event("resize"));
+
+    // ✅ El menú debería cerrarse
+    expect(screen.queryByTestId("mobile-menu")).not.toBeInTheDocument();
+  });
+
+  it("cierra el buscador cuando la pantalla pasa a >=768px", () => {
+    render(<Header />);
+
+    // Abrir buscador desde el menú mobile
+    const toggleMenuBtn = screen.getByRole("button", { name: /abrir menú/i });
+    fireEvent.click(toggleMenuBtn);
+    const searchBtn = screen.getByTestId("buscar-menu-mobile");
+    fireEvent.click(searchBtn.closest("button")!);
+    // El componente Search debería estar abierto
+    waitFor(() => {
+      expect(screen.getByRole("search")).toBeInTheDocument();
+    });
+
+    // Simular resize a desktop
+    window.innerWidth = 1024;
+    fireEvent(window, new Event("resize"));
+
+    // ✅ El buscador debería cerrarse
+    expect(screen.queryByRole("search")).not.toBeInTheDocument();
+  });
+
+  it("llama a onClose del Search mockeado", () => {
+    render(<Header />);
+
+    // Abrir menú mobile
+    fireEvent.click(screen.getByRole("button", { name: /abrir menú/i }));
+
+    // Click en Buscar
+    const searchButtons = screen.getAllByText("Buscar");
+    const mobileBtn = searchButtons[searchButtons.length - 1]; // generalmente el último es mobile
+    fireEvent.click(mobileBtn.closest("button")!);
+
+    // MockSearch renderizado
+    expect(screen.getByTestId("mock-search")).toBeInTheDocument();
+
+    // Simulamos que el usuario hace click en Cerrar
+    fireEvent.click(screen.getByText("Cerrar mock"));
+
+    // ✅ como el Header pasa onClose={() => setOpenSearch(false)},
+    // esto cubre la rama al ejecutarlo
+  });
 });

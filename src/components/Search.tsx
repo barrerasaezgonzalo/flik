@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { FaMagnifyingGlass, FaDeleteLeft } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaDeleteLeft, FaXmark } from "react-icons/fa6";
 
 export default function Search({
   openSearch,
@@ -31,7 +31,9 @@ export default function Search({
 
   return (
     <div
+      role="search"
       id="site-search"
+      data-testid="site-search"
       className={`container mx-auto max-w-4xl px-4 mb-4 transition-all duration-300 grid overflow-hidden ${
         openSearch
           ? "grid-rows-[1fr] py-2 opacity-100"
@@ -39,13 +41,16 @@ export default function Search({
       }`}
     >
       <div className="overflow-hidden">
-        <div className="relative w-full">
-          <FaMagnifyingGlass className="absolute left-0 top-1/5 -translate-y-1/2 text-gray-500 w-5 h-5" />
-          <form onSubmit={handleSubmit} className="flex flex-col" role="form">
-            <label htmlFor="site-search" className="sr-only">
-              Buscar en el blog
-            </label>
+        <form onSubmit={handleSubmit} className="flex flex-col" role="form">
+          <label htmlFor="site-search" className="sr-only">
+            Buscar en el blog
+          </label>
+
+          {/* contenedor solo para el input + lupa */}
+          <div className="relative w-full">
+            <FaMagnifyingGlass className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
             <input
+              aria-label="Buscar en el blog"
               ref={inputRef}
               type="text"
               value={query}
@@ -53,23 +58,38 @@ export default function Search({
               className="w-full text-lg text-black pl-8 pr-8 border-0 border-b border-gray-300 rounded-none focus:outline-none focus:ring-0"
               aria-describedby="search-helper"
             />
-            <p className="mt-2 text-sm text-gray-500" id="search-helper">
-              Ingresa tu búsqueda y presiona{" "}
-              <kbd className="px-1 border rounded">Enter</kbd> para ver los
-              resultados
-            </p>
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute right-0 top-1/4 -translate-y-1/2 text-gray-400 hover:text-black p-1"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black p-1"
                 aria-label="Limpiar búsqueda"
               >
                 <FaDeleteLeft className="w-5 h-5" />
               </button>
             )}
-          </form>
-        </div>
+          </div>
+
+          <p
+            className="inline-block mt-2 text-sm text-gray-500"
+            id="search-helper"
+          >
+            Ingresa tu búsqueda y presiona{" "}
+            <kbd className="px-1 border rounded">Enter</kbd> para ver los
+            resultados.{" "}
+          </p>
+          <p className="inline-block text-sm text-gray-500" id="close-search">
+            {" "}
+            o presiona
+            <FaXmark
+              className="inline-block w-5 h-5"
+              onClick={onClose}
+              data-testid="close-search"
+              role="button"
+            />
+            para cerrar el buscador.
+          </p>
+        </form>
       </div>
     </div>
   );

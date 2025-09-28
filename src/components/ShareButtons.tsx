@@ -5,6 +5,7 @@ import {
   FaTelegram,
   FaXTwitter,
 } from "react-icons/fa6";
+import React from "react";
 
 export function ShareButtons({
   post,

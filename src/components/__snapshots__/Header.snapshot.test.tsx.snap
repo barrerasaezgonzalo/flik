@@ -26,6 +26,7 @@ exports[`Header snapshots > match snapshot render 1`] = `
       <button
         aria-label="Abrir menú"
         class="md:hidden text-2xl text-black cursor-pointer"
+        role="button"
       >
         <svg
           class="w-7 h-7"
@@ -50,7 +51,7 @@ exports[`Header snapshots > match snapshot render 1`] = `
         >
           <li>
             <a
-              class="text-sm border-t border-b border-r border-black inline-block text-black  hover:text-green-600 px-[20px] py-[10px]"
+              class="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[20px] py-[10px]"
               href="/"
             >
               Posts
@@ -86,7 +87,10 @@ exports[`Header snapshots > match snapshot render 1`] = `
             <button
               aria-controls="site-search"
               aria-expanded="false"
+              aria-label="Buscar en menú mobile"
               class="cursor-pointer border-t border-b border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px] focus:outline-none"
+              data-testid="buscar-menu-mobile"
+              role="button"
               type="button"
             >
               Buscar

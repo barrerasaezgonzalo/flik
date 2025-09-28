@@ -3,19 +3,35 @@
 import Link from "next/link";
 import Image from "next/image";
 import Search from "./Search";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaAlignJustify,
-  FaDeleteLeft,
   FaSignsPost,
   FaLightbulb,
   FaBookmark,
   FaMugSaucer,
+  FaMagnifyingGlass,
+  FaXmark,
 } from "react-icons/fa6";
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
-  const [openSearch, setOpenSearch] = useState(false);
+  const [open, setOpen] = useState(false); // menú mobile
+  const [openSearch, setOpenSearch] = useState(false); // buscador único
+
+  // 👇 Efecto para cerrar buscador al cambiar de viewport
+  useEffect(() => {
+    const handleResize = () => {
+      // Si cambia el ancho de pantalla y supera breakpoint md (768px),
+      // reseteamos el buscador
+      if (window.innerWidth >= 768) {
+        setOpen(false);
+        setOpenSearch(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <header className="bg-white shadow-sm border-b border-green-600">
@@ -38,9 +54,10 @@ export default function Header() {
           className="md:hidden text-2xl text-black cursor-pointer"
           onClick={() => setOpen(!open)}
           aria-label="Abrir menú"
+          role="button"
         >
           {open ? (
-            <FaDeleteLeft className="w-7 h-7" />
+            <FaXmark className="w-7 h-7" />
           ) : (
             <FaAlignJustify className="w-7 h-7" />
           )}
@@ -50,10 +67,9 @@ export default function Header() {
         <nav className="hidden md:flex md:items-center md:space-x-6">
           <ul className="flex">
             <li>
-              {/* inline-block bg-black text-white p-[10px] rounded hover:bg-green-600 */}
               <Link
                 href="/"
-                className="text-sm border-t border-b border-r border-black inline-block text-black  hover:text-green-600 px-[20px] py-[10px]"
+                className="text-sm border-t border-b border-r border-black inline-block text-black hover:text-green-600 px-[20px] py-[10px]"
               >
                 Posts
               </Link>
@@ -84,10 +100,13 @@ export default function Header() {
             </li>
             <li className="text-sm">
               <button
+                role="button"
                 type="button"
                 onClick={() => setOpenSearch((v) => !v)}
                 aria-expanded={openSearch}
                 aria-controls="site-search"
+                aria-label="Buscar en menú mobile"
+                data-testid="buscar-menu-mobile"
                 className="cursor-pointer border-t border-b border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px] focus:outline-none"
               >
                 Buscar
@@ -96,7 +115,10 @@ export default function Header() {
           </ul>
         </nav>
       </div>
-      {<Search openSearch={openSearch} />}
+
+      {/* Buscador único */}
+      <Search openSearch={openSearch} onClose={() => setOpenSearch(false)} />
+
       {/* Menú desplegable en mobile */}
       {open && (
         <div
@@ -111,7 +133,7 @@ export default function Header() {
                 onClick={() => setOpen(false)}
               >
                 <FaSignsPost className="w-7 h-7" />{" "}
-                <p className="ml-4"> Posts</p>
+                <p className="ml-4">Posts</p>
               </Link>
             </li>
             <li className="border-b border-gray-200 py-2">
@@ -121,7 +143,7 @@ export default function Header() {
                 onClick={() => setOpen(false)}
               >
                 <FaLightbulb className="w-7 h-7" />{" "}
-                <p className="ml-4"> Sobre Flik</p>
+                <p className="ml-4">Sobre Flik</p>
               </Link>
             </li>
             <li className="border-b border-gray-200 py-2">
@@ -131,7 +153,7 @@ export default function Header() {
                 onClick={() => setOpen(false)}
               >
                 <FaBookmark className="w-7 h-7" />{" "}
-                <p className="ml-4"> Categorías</p>
+                <p className="ml-4">Categorías</p>
               </Link>
             </li>
             <li className="border-b border-gray-200 py-2">
@@ -141,13 +163,22 @@ export default function Header() {
                 onClick={() => setOpen(false)}
               >
                 <FaMugSaucer className="w-7 h-7" />{" "}
-                <p className="ml-4"> Contacto</p>
+                <p className="ml-4">Contacto</p>
               </Link>
             </li>
+            <li className="border-b border-gray-200 py-2">
+              <button
+                className="inline-flex items-center text-black hover:text-green-600 transition-colors"
+                onClick={() => {
+                  setOpen(false); // cerrar menú
+                  setOpenSearch(true); // abrir buscador
+                }}
+              >
+                <FaMagnifyingGlass className="w-7 h-7" />{" "}
+                <p className="ml-4">Buscar</p>
+              </button>
+            </li>
           </ul>
-          <div className="mt-3">
-            <Search openSearch={true} onClose={() => setOpen(false)} />
-          </div>
         </div>
       )}
     </header>

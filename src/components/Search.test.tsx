@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Search from "./Search";
 import { vi } from "vitest";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 // mock de useRouter de next/navigation
 const pushMock = vi.fn();
@@ -41,5 +42,43 @@ describe("Search component", () => {
     fireEvent.submit(input.closest("form")!);
 
     expect(pushMock).toHaveBeenCalledWith("/search?q=nextjs");
+  });
+
+  it("limpia la búsqueda al hacer click en el botón Limpiar", () => {
+    render(<Search openSearch={true} onClose={() => {}} />);
+
+    const input = screen.getByRole("textbox");
+
+    // Simulamos escribir algo
+    fireEvent.change(input, { target: { value: "React" } });
+    expect(input).toHaveValue("React");
+
+    // Aparece el botón de limpiar
+    const clearBtn = screen.getByRole("button", { name: /limpiar búsqueda/i });
+    fireEvent.click(clearBtn);
+
+    // ✅ Input vacío después del click
+    expect(input).toHaveValue("");
+  });
+
+  it("ejecuta router.push y onClose al enviar con query", () => {
+    const handleClose = vi.fn();
+    const router = useRouter();
+
+    render(<Search openSearch={true} onClose={handleClose} />);
+
+    const input = screen.getByRole("textbox");
+
+    // Escribimos algo en el input
+    fireEvent.change(input, { target: { value: "react" } });
+    expect(input).toHaveValue("react");
+
+    // Enviamos el formulario
+    fireEvent.submit(screen.getByRole("form"));
+
+    // ✅ router.push llamado con la query
+    expect(router.push).toHaveBeenCalledWith("/search?q=react");
+    // ✅ onClose ejecutado
+    expect(handleClose).toHaveBeenCalled();
   });
 });

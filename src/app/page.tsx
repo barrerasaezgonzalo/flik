@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://flik.cl/posts",
   },
-}
+};
 
 export default async function HomePage({
   searchParams,
