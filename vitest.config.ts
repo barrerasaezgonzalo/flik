@@ -23,6 +23,7 @@ export default defineConfig({
         "src/lib/**/*.{ts,tsx}",
         "src/components/**/*.{ts,tsx}",
         "src/app/api/**/*.{ts,tsx}",
+        // "src/app/**/*.{ts,tsx}",
       ],
       exclude: [
         "node_modules/**",
@@ -34,6 +35,8 @@ export default defineConfig({
         "tailwind.config.ts",
         "vitest.config.ts",
         "e2e/**",
+        "src/app/admin/**/*.{ts,tsx}",
+        "src/app/global-error.tsx",
       ],
       provider: "v8",
       reporter: ["text", "html"],

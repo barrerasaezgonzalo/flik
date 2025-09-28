@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
-
-// Define the structure of a submitted post
-interface SubmittedPost {
-  title: string;
-  email: string;
-  category: string;
-  content: string;
-  submittedAt: string;
-}
+import { SubmittedPost } from "@/types";
 
 // Path to the submissions file
 const submissionsFilePath = path.join(

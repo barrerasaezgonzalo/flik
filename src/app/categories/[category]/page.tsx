@@ -7,6 +7,7 @@ import { getPaginatedItems } from "@/lib/utils";
 import PostListItem from "@/components/PostListItem";
 import { Post } from "@/types";
 import { supabase } from "@/lib/supabaseClient";
+import React from "react";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -48,6 +49,9 @@ export async function generateMetadata({
   return {
     title: `${category.name} | Blog de tecnología en español`,
     description: `Artículos sobre ${category.name} en Flik.`,
+    alternates: {
+      canonical: `https://flik.cl/categories/${category.slug}`,
+    },
     openGraph: {
       title: `${category.name} | Blog de tecnología en español`,
       description: `Artículos sobre ${category.name} en Flik.`,

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import React from "react";
 
 // 🔹 Metadata condicional
 export async function generateMetadata({

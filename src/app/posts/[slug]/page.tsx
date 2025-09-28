@@ -29,6 +29,9 @@ export async function generateMetadata({
   return {
     title: post.title + " | Blog de tecnología en español",
     description: post.excerpt,
+    alternates: {
+      canonical: `https://flik.cl/posts/${post.slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.excerpt,

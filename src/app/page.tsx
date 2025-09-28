@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     "Listado completo de artículos y publicaciones en Flik, blog de tecnología en español.",
   alternates: {
-    canonical: "https://flik.cl/posts",
+    canonical: "https://flik.cl/",
   },
 };
 

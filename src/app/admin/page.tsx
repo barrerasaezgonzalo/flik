@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-import { Post } from "@/types";
-
-type PostWithCategory = Post & {
-  categories?: { name: string };
-};
+import { PostWithCategory } from "@/types";
 
 export default function AdminPage() {
   const [allowed, setAllowed] = useState(false);

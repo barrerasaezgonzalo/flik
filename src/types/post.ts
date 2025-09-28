@@ -13,3 +13,21 @@ export type Post = {
   featured?: boolean;
   category?: Category; // se completa en los mappers con getPosts, getPostBySlug, etc.
 };
+
+export interface PostListItemProps {
+  post: Post;
+  commentCount: number;
+  fetchpriority?: "high" | "low" | "auto";
+}
+
+export type PostWithCategory = Post & {
+  categories?: { name: string };
+};
+
+export interface SubmittedPost {
+  title: string;
+  email: string;
+  category: string;
+  content: string;
+  submittedAt: string;
+}

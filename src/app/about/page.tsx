@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import React from "react";
 
 export const metadata = {
   title: "Sobre Flik | Blog de tecnología en español",

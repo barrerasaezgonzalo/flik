@@ -1,3 +1,5 @@
+import React from "react";
+
 export const metadata = {
   title: "Política de Privacidad | Blog de tecnología en español",
   description:
