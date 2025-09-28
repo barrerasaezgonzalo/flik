@@ -10,25 +10,13 @@ import { notFound } from "next/navigation";
 
 const PAGE_SIZE = 15;
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams?: { page?: string };
-}): Promise<Metadata> {
-  const rawPage = searchParams?.page;
-  const page = rawPage && /^\d+$/.test(rawPage) ? parseInt(rawPage, 10) : 1;
-
-  return {
-    title:
-      page > 1
-        ? `Todos los posts (Página ${page}) | Blog de tecnología en español`
-        : `Todos los posts | Blog de tecnología en español`,
-    description:
-      "Listado completo de artículos y publicaciones en Flik, blog de tecnología en español.",
-    alternates: {
-      canonical: "https://flik.cl/posts",
-    },
-  };
+export const metadata: Metadata = {
+  title: "Todos los posts | Blog de tecnología en español",
+  description:
+    "Listado completo de artículos y publicaciones en Flik, blog de tecnología en español.",
+  alternates: {
+    canonical: "https://flik.cl/posts",
+  },
 }
 
 export default async function HomePage({

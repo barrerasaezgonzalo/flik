@@ -2,6 +2,21 @@ import { Post, Category } from "@/types";
 import { supabase } from "./supabaseClient";
 import * as Sentry from "@sentry/nextjs";
 
+export async function getAdjacentPosts(slug: string) {
+  const { data } = await supabase
+    .from("posts")
+    .select("id, slug, title, created_at")
+    .order("created_at", { ascending: true });
+
+  if (!data) return { prev: null, next: null };
+
+  const index = data.findIndex((p) => p.slug === slug);
+  return {
+    prev: index > 0 ? data[index - 1] : null,
+    next: index < data.length - 1 ? data[index + 1] : null,
+  };
+}
+
 export async function getCategories(): Promise<Category[]> {
   const { data, error } = await supabase
     .from("categories")

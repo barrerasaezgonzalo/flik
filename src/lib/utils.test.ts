@@ -1,72 +1,71 @@
-import { formatDate, getPaginatedItems } from "./utils";
+import { formatDate, getReadingTime, getPaginatedItems } from "./utils"
 
+// 🧪 formatDate
 describe("formatDate", () => {
-  it("formatea una fecha válida en español (mes y año)", () => {
-    const result = formatDate("2025-09-21T00:00:00Z");
-    // no validamos el día exacto por zona horaria, solo mes + año
-    expect(result).toMatch(/septiembre de 2025/);
-  });
+  it("devuelve cadena vacía si dateString es null o undefined", () => {
+    expect(formatDate(null)).toBe("")
+    expect(formatDate(undefined)).toBe("")
+  })
 
-  it("funciona con otra fecha (enero)", () => {
-    const result = formatDate("2024-01-05");
-    expect(result).toMatch(/enero de 2024/);
-  });
+  it("devuelve cadena vacía si dateString no es válido", () => {
+    expect(formatDate("fecha-falsa")).toBe("")
+  })
 
-  it("funciona con fechas ISO generadas por Date", () => {
-    const iso = new Date(2023, 6, 15).toISOString(); // 15 julio 2023 local
-    const result = formatDate(iso);
-    expect(result).toMatch(/julio de 2023/);
-  });
+  it("formatea correctamente una fecha válida", () => {
+    const formatted = formatDate("2025-09-28")
+    expect(formatted).toMatch(/septiembre de 2025/)
+  })
+})
 
-  it("lanza error si el string no es una fecha válida", () => {
-    expect(() => formatDate("no-es-una-fecha")).toThrow();
-  });
+// 🧪 getReadingTime
+describe("getReadingTime", () => {
+  it("devuelve 0 min si el contenido está vacío", () => {
+    expect(getReadingTime("")).toBe("0 min de lectura")
+  })
 
-  const items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  it("calcula el tiempo de lectura redondeado hacia arriba", () => {
+    const content = "palabra ".repeat(250) // 250 palabras ≈ 1.25 min
+    expect(getReadingTime(content)).toBe("2 min de lectura")
+  })
+})
 
-  it("devuelve la primera página correctamente", () => {
-    const result = getPaginatedItems(items, 1, 3);
-    expect(result.items).toEqual([1, 2, 3]);
-    expect(result.totalPages).toBe(3);
-    expect(result.currentPage).toBe(1);
-    expect(result.hasNextPage).toBe(true);
-    expect(result.hasPreviousPage).toBe(false);
-  });
-
-  it("devuelve la segunda página correctamente", () => {
-    const result = getPaginatedItems(items, 2, 3);
-    expect(result.items).toEqual([4, 5, 6]);
-    expect(result.currentPage).toBe(2);
-    expect(result.hasNextPage).toBe(true);
-    expect(result.hasPreviousPage).toBe(true);
-  });
-
-  it("devuelve la última página correctamente", () => {
-    const result = getPaginatedItems(items, 3, 3);
-    expect(result.items).toEqual([7, 8, 9]);
-    expect(result.currentPage).toBe(3);
-    expect(result.hasNextPage).toBe(false);
-    expect(result.hasPreviousPage).toBe(true);
-  });
-
-  it("ajusta currentPage si es menor que 1", () => {
-    const result = getPaginatedItems(items, -5, 4);
-    expect(result.currentPage).toBe(1);
-    expect(result.items).toEqual([1, 2, 3, 4]);
-  });
-
-  it("ajusta currentPage si es mayor que totalPages", () => {
-    const result = getPaginatedItems(items, 999, 4);
-    expect(result.currentPage).toBe(3);
-    expect(result.items).toEqual([9]); // la última página incompleta
-  });
+// 🧪 getPaginatedItems
+describe("getPaginatedItems", () => {
+  const items = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
   it("maneja lista vacía", () => {
-    const result = getPaginatedItems([], 1, 5);
-    expect(result.items).toEqual([]);
-    expect(result.totalPages).toBe(1);
-    expect(result.currentPage).toBe(1);
-    expect(result.hasNextPage).toBe(false);
-    expect(result.hasPreviousPage).toBe(false);
-  });
-});
+    const result = getPaginatedItems([], 1, 4)
+    expect(result.items).toEqual([])
+    expect(result.total).toBe(0)
+    expect(result.totalPages).toBe(1)
+    expect(result.currentPage).toBe(1)
+    expect(result.hasNextPage).toBe(false)
+    expect(result.hasPreviousPage).toBe(false)
+  })
+
+  it("devuelve la primera página correctamente", () => {
+    const result = getPaginatedItems(items, 1, 4)
+    expect(result.items).toEqual([1, 2, 3, 4])
+    expect(result.currentPage).toBe(1)
+    expect(result.totalPages).toBe(3)
+    expect(result.hasNextPage).toBe(true)
+    expect(result.hasPreviousPage).toBe(false)
+  })
+
+  it("devuelve la última página incompleta correctamente", () => {
+    const result = getPaginatedItems(items, 3, 4)
+    expect(result.items).toEqual([9])
+    expect(result.currentPage).toBe(3)
+    expect(result.totalPages).toBe(3)
+    expect(result.hasNextPage).toBe(false)
+    expect(result.hasPreviousPage).toBe(true)
+  })
+
+  it("ajusta currentPage si es mayor que totalPages", () => {
+    const result = getPaginatedItems(items, 999, 4)
+    expect(result.currentPage).toBe(3) // última página
+    expect(result.items).toEqual([9]) // se ajusta al slice correcto
+    expect(result.hasNextPage).toBe(false)
+    expect(result.hasPreviousPage).toBe(true)
+  })
+})

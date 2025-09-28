@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { Search as SearchIcon, X } from "lucide-react";
+import { FaMagnifyingGlass, FaDeleteLeft } from "react-icons/fa6";
 
 export default function Search({
   openSearch,
@@ -40,7 +40,7 @@ export default function Search({
     >
       <div className="overflow-hidden">
         <div className="relative w-full">
-          <SearchIcon className="absolute left-0 top-1/4 -translate-y-1/2 text-gray-500 w-5 h-5" />
+          <FaMagnifyingGlass className="absolute left-0 top-1/5 -translate-y-1/2 text-gray-500 w-5 h-5" />
           <form onSubmit={handleSubmit} className="flex flex-col" role="form">
             <label htmlFor="site-search" className="sr-only">
               Buscar en el blog
@@ -65,7 +65,7 @@ export default function Search({
                 className="absolute right-0 top-1/4 -translate-y-1/2 text-gray-400 hover:text-black p-1"
                 aria-label="Limpiar búsqueda"
               >
-                <X className="w-5 h-5" />
+                <FaDeleteLeft className="w-5 h-5" />
               </button>
             )}
           </form>

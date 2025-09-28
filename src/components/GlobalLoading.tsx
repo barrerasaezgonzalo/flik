@@ -18,7 +18,10 @@ export default function GlobalLoading() {
 
   return (
     <div className="fixed inset-0 bg-white/60 flex items-center justify-center z-50">
-      <div role="status" className="w-10 h-10 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+      <div
+        role="status"
+        className="w-10 h-10 border-4 border-green-600 border-t-transparent rounded-full animate-spin"
+      />
     </div>
   );
 }

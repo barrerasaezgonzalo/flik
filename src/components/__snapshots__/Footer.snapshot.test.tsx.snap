@@ -6,72 +6,75 @@ exports[`Footer snapshots > match snapshot render 1`] = `
     class="bg-gray-100 border-t mt-8 py-6"
   >
     <div
-      class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-sm text-gray-600 gap-4"
+      class="max-w-4xl mx-auto px-4 flex flex-col gap-6 text-sm text-gray-600"
     >
       <div
-        class="flex items-center gap-3 text-center md:text-left"
+        class="flex flex-col md:flex-row items-center justify-between gap-4"
       >
-        <a
-          class="flex items-center gap-2"
-          href="/"
+        <div
+          class="flex items-center gap-3 text-center md:text-left"
         >
-          <img
-            alt="Flik Blog"
-            class="w-12 h-auto"
-            height="48"
-            src="/logo.png"
-            width="48"
-          />
-        </a>
-        <p
-          class="text-gray-600 pt-2"
+          <a
+            class="flex items-center gap-2"
+            href="/"
+          >
+            <img
+              alt="Flik Blog"
+              class="w-12 h-auto"
+              height="48"
+              src="/logo.png"
+              width="48"
+            />
+          </a>
+          <p
+            class="text-gray-600 pt-2"
+          >
+            Blog de tecnología en español © 
+            2025
+          </p>
+        </div>
+        <nav
+          class="flex flex-wrap items-center gap-4"
         >
-          Blog de tecnología en español © 
-          2025
-           
-        </p>
+          <a
+            class="hover:text-gray-800"
+            href="/about"
+          >
+            Sobre Flik
+          </a>
+          <a
+            class="hover:text-gray-800"
+            href="/privacy"
+          >
+            Privacidad
+          </a>
+          <a
+            class="hover:text-gray-800"
+            href="/terminos"
+          >
+            Términos
+          </a>
+          <a
+            class="hover:text-gray-800"
+            href="/contact"
+          >
+            Contacto
+          </a>
+          <a
+            class="hover:text-gray-800"
+            href="https://www.linkedin.com/company/flikcl/"
+            target="_blank"
+          >
+            Linkedin
+          </a>
+          <a
+            class="hover:text-gray-800"
+            href="/mapa"
+          >
+            Mapa
+          </a>
+        </nav>
       </div>
-      <nav
-        class="flex items-center gap-4"
-      >
-        <a
-          class="hover:text-gray-800"
-          href="/about"
-        >
-          Sobre Flik
-        </a>
-        <a
-          class="hover:text-gray-800"
-          href="/privacy"
-        >
-          Privacidad
-        </a>
-        <a
-          class="hover:text-gray-800"
-          href="/terminos"
-        >
-          Términos
-        </a>
-        <a
-          class="hover:text-gray-800"
-          href="/contact"
-        >
-          Contacto
-        </a>
-        <a
-          class="hover:text-gray-800"
-          href="https://www.linkedin.com/company/flikcl/"
-          target="_blank"
-        >
-          Linkedin
-        </a>
-        <a
-          class="hover:text-gray-800"
-          href="/mapa"
-        >
-          Mapa
-        </a>
-      </nav>
     </div>
   </footer>
 </div>

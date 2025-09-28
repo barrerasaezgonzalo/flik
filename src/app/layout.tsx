@@ -96,12 +96,6 @@ export default function RootLayout({
         />
 
         <Script
-          id="cookieyes"
-          src="https://cdn-cookieyes.com/client_data/8eefd0d2385ccb3becdf9718/script.js"
-          strategy="lazyOnload"
-        />
-
-        <Script
           src={`https://www.googletagmanager.com/gtag/js?id=G-T1ZKQDYNZZ`}
           strategy="lazyOnload"
           defer
@@ -123,6 +117,14 @@ export default function RootLayout({
           <Header />
           <main className="flex-grow container mx-auto px-4 py-6 sm:py-8">
             {children}
+
+            {process.env.NODE_ENV === "production" && (
+              <Script
+                id="cookieyes"
+                src="https://cdn-cookieyes.com/client_data/TU_ID_UNICO/script.js"
+                strategy="afterInteractive" // se carga después de que la página se monta
+              />
+            )}
           </main>
           <Footer />
         </div>

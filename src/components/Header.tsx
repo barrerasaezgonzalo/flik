@@ -5,13 +5,13 @@ import Image from "next/image";
 import Search from "./Search";
 import React, { useState } from "react";
 import {
-  X,
-  Menu,
-  Rss,
-  CircleQuestionMark,
-  BookOpenCheck,
-  AtSign,
-} from "lucide-react";
+  FaAlignJustify,
+  FaDeleteLeft,
+  FaSignsPost,
+  FaLightbulb,
+  FaBookmark,
+  FaMugSaucer,
+} from "react-icons/fa6";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -39,7 +39,11 @@ export default function Header() {
           onClick={() => setOpen(!open)}
           aria-label="Abrir menú"
         >
-          {open ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+          {open ? (
+            <FaDeleteLeft className="w-7 h-7" />
+          ) : (
+            <FaAlignJustify className="w-7 h-7" />
+          )}
         </button>
 
         {/* Nav en desktop */}
@@ -106,7 +110,8 @@ export default function Header() {
                 className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                <Rss className="w-7 h-7" /> <p className="ml-4"> Posts</p>
+                <FaSignsPost className="w-7 h-7" />{" "}
+                <p className="ml-4"> Posts</p>
               </Link>
             </li>
             <li className="border-b border-gray-200 py-2">
@@ -115,7 +120,7 @@ export default function Header() {
                 className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                <CircleQuestionMark className="w-7 h-7" />{" "}
+                <FaLightbulb className="w-7 h-7" />{" "}
                 <p className="ml-4"> Sobre Flik</p>
               </Link>
             </li>
@@ -125,7 +130,7 @@ export default function Header() {
                 className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                <BookOpenCheck className="w-7 h-7" />{" "}
+                <FaBookmark className="w-7 h-7" />{" "}
                 <p className="ml-4"> Categorías</p>
               </Link>
             </li>
@@ -135,7 +140,8 @@ export default function Header() {
                 className="inline-flex items-center text-black hover:text-green-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
-                <AtSign className="w-7 h-7" /> <p className="ml-4"> Contacto</p>
+                <FaMugSaucer className="w-7 h-7" />{" "}
+                <p className="ml-4"> Contacto</p>
               </Link>
             </li>
           </ul>

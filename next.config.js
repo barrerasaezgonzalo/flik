@@ -9,15 +9,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  async redirects() {
-    return [
-      {
-        source: "/posts",
-        destination: "/",
-        permanent: true,
-      },
-    ];
-  },
   async headers() {
     return [
       {
