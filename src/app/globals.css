@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./editor.css";
 
 :root {
   --background: #ffffff;
@@ -27,30 +28,4 @@ body {
 
 h1 {
   color: var(--foreground);
-}
-pre {
-  background-color: #c0c0c0;
-  color: var(--background);
-  padding: 10px;
-  border-radius: 8px;
-  margin: 10px 0;
-}
-
-* {
-  /* background-color: rgba(255,0,0,0.05) !important; */
-}
-
-.prose p:empty::after {
-  content: " ";
-  display: block;
-  height: 1rem;
-}
-
-.prose pre {
-  background-color: var(--foreground);
-  color: var(--background);
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  font-size: 0.875rem; /* text-sm */
 }

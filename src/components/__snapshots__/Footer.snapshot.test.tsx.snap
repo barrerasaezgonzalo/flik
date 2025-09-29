@@ -56,6 +56,12 @@ exports[`Footer snapshots > match snapshot render 1`] = `
           </a>
           <a
             class="hover:text-gray-800"
+            href="/tags"
+          >
+            Tags
+          </a>
+          <a
+            class="hover:text-gray-800"
             href="/contact"
           >
             Contacto

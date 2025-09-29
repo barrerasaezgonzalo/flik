@@ -35,6 +35,9 @@ export default function Footer() {
             <a href="/terminos" className="hover:text-gray-800">
               Términos
             </a>
+            <a href="/tags" className="hover:text-gray-800">
+              Tags
+            </a>
             <a href="/contact" className="hover:text-gray-800">
               Contacto
             </a>

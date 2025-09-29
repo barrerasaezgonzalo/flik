@@ -32,7 +32,7 @@ async function SearchResultsComponent({ query }: { query: string }) {
           />
         ))
       ) : (
-        <p className="text-white text-xl text-center">
+        <p className="text-white text-xl text-left">
           Lo sentimos, no encontramos nada con ese término de búsqueda. Pero no
           te vayas 👀, en Flik tenemos artículos sobre programación, IA,
           seguridad y mucho más.

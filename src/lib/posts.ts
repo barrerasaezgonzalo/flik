@@ -53,17 +53,26 @@ export async function getPosts(): Promise<Post[]> {
       slug: "",
       name: "",
     },
+    post_tags: [],
   }));
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
   const { data, error } = await supabase
     .from("posts")
-    .select("id,slug,title,date,image,excerpt,content,featured,category_id")
+    .select(
+      `
+        id,slug,title,date,image,excerpt,content,featured,category_id,
+        post_tags (
+          tag_id,
+          tags!inner ( id, name, slug )
+        )
+      `,
+    )
     .eq("slug", slug)
     .single();
 
-  if (error) {
+  if (error || !data) {
     Sentry.captureException(error);
     return undefined;
   }
@@ -79,6 +88,13 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
       slug: "",
       name: "",
     },
+    post_tags: (data.post_tags ?? []).map((pt) => {
+      const tag = Array.isArray(pt.tags) ? pt.tags[0] : pt.tags;
+      return {
+        tag_id: pt.tag_id,
+        tags: tag as { id: string; name: string; slug: string },
+      };
+    }),
   } as Post;
 }
 
@@ -108,6 +124,7 @@ export async function getPostsByCategory(
     .map((p) => ({
       ...p,
       category: category,
+      post_tags: [],
     }));
 }
 
@@ -136,6 +153,7 @@ export async function searchPosts(query: string): Promise<Post[]> {
       slug: "",
       name: "",
     },
+    post_tags: [],
   }));
 }
 
@@ -169,5 +187,6 @@ export async function getRelatedPosts(
     .map((p) => ({
       ...p,
       category: category,
+      post_tags: [],
     }));
 }

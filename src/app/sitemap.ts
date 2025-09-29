@@ -58,5 +58,20 @@ export default async function sitemap() {
     },
   ];
 
-  return [...staticEntries, ...postEntries, ...categoryEntries];
+  // 4 -tags
+  const { data: rawTags, error: tagsError } = await supabase
+    .from("tags")
+    .select("slug");
+
+  if (tagsError) {
+    console.error("Error cargando tags para sitemap:", tagsError);
+  }
+
+  const tagsUrls =
+    rawTags?.map((t) => ({
+      url: `https://flik.cl/tags/${t.slug}`,
+      lastModified: new Date().toISOString().split("T")[0], // usamos fecha actual
+    })) || [];
+
+  return [...staticEntries, ...postEntries, ...categoryEntries, ...tagsUrls];
 }

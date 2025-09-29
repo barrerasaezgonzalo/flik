@@ -8,7 +8,8 @@ import MiniEditor from "@/components/MiniEditor";
 export default function NewPostPage() {
   const router = useRouter();
   const [allowed, setAllowed] = useState(false);
-
+  const [tags, setTags] = useState<{ id: string; name: string }[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [categories, setCategories] = useState<
     { id: string; name: string; slug: string }[]
   >([]);
@@ -26,8 +27,14 @@ export default function NewPostPage() {
     if (window.location.hostname === "localhost") {
       setAllowed(true);
       loadCategories();
+      loadTags();
     }
   }, []);
+
+  async function loadTags() {
+    const { data: allTags } = await supabase.from("tags").select("id, name");
+    if (allTags) setTags(allTags);
+  }
 
   async function loadCategories() {
     const { data, error } = await supabase
@@ -73,16 +80,37 @@ export default function NewPostPage() {
       return;
     }
 
-    const { error } = await supabase.from("posts").insert([
-      {
-        ...form,
-        created_at: new Date().toISOString(),
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("posts")
+      .insert([
+        {
+          ...form,
+          created_at: new Date().toISOString(),
+        },
+      ])
+      .select("id")
+      .single();
     if (error) {
       console.error(error);
       alert("Error al guardar");
     } else {
+      const { error: deleteError } = await supabase
+        .from("post_tags")
+        .delete()
+        .eq("post_id", data.id); // asegurate de guardar el id al cargar el post
+      if (deleteError) console.error(deleteError);
+
+      // 3. Insertar tags seleccionados
+      const rows = selectedTags.map((tagId) => ({
+        post_id: data.id,
+        tag_id: tagId,
+      }));
+
+      const { error: insertError } = await supabase
+        .from("post_tags")
+        .insert(rows);
+      if (insertError) console.error(insertError);
+
       alert("Publicación creada");
       router.push("/admin");
     }
@@ -142,7 +170,30 @@ export default function NewPostPage() {
           value={form.content}
           onChange={(html) => setForm((f) => ({ ...f, content: html }))}
         />
-
+        <div>
+          <label className="block font-medium mb-1">Tags</label>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <label key={tag.id} className="flex items-center gap-1">
+                <input
+                  type="checkbox"
+                  value={tag.id}
+                  checked={selectedTags.includes(tag.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedTags([...selectedTags, tag.id]);
+                    } else {
+                      setSelectedTags(
+                        selectedTags.filter((id) => id !== tag.id),
+                      );
+                    }
+                  }}
+                />
+                {tag.name}
+              </label>
+            ))}
+          </div>
+        </div>
         <button
           type="submit"
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"

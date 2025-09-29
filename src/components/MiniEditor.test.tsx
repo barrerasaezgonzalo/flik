@@ -1,189 +1,218 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import MiniEditor from "./MiniEditor";
-import React from "react";
+// src/components/MiniEditor.test.tsx
+import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
-import { Editor } from "@tiptap/core";
+import React from "react";
+import MiniEditor from "./MiniEditor";
 
-describe("MiniEditor", () => {
-  it("renderiza la barra de herramientas", () => {
+// Mocks reutilizables
+const runMock = vi.fn();
+const toggleBoldMock = vi.fn(() => ({ run: runMock }));
+const toggleHeadingMock = vi.fn(() => ({ run: runMock }));
+const unsetLinkMock = vi.fn(() => ({ run: runMock }));
+const toggleCodeMock = vi.fn(() => ({ run: runMock }));
+const toggleCodeBlockMock = vi.fn(() => ({ run: runMock }));
+const setLinkMock = vi.fn(() => ({ run: runMock }));
+const setImageMock = vi.fn(() => ({ run: runMock }));
+
+// Mock de @tiptap/react
+vi.mock("@tiptap/react", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  EditorContent: (props: any) => <div data-testid="editor" {...props} />,
+  useEditor: () => ({
+    chain: () => ({
+      focus: () => ({
+        toggleBold: toggleBoldMock,
+        toggleHeading: toggleHeadingMock,
+        unsetLink: unsetLinkMock,
+        toggleCode: toggleCodeMock,
+        toggleCodeBlock: toggleCodeBlockMock,
+        setLink: setLinkMock,
+        setImage: setImageMock,
+      }),
+    }),
+    getHTML: () => "<p>mock</p>",
+  }),
+}));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("MiniEditor toolbar", () => {
+  it("ejecuta toggleBold al hacer click en B", () => {
     render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
-    expect(screen.getByText("B")).toBeInTheDocument();
-    expect(screen.getByText("🔗")).toBeInTheDocument();
-    expect(screen.getByText("</>")).toBeInTheDocument();
-    expect(screen.getByText("📝 HTML")).toBeInTheDocument();
-    expect(screen.getByText("Expandir")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("B"));
+    expect(toggleBoldMock).toHaveBeenCalled();
+    expect(runMock).toHaveBeenCalled();
   });
 
-  it("abre el modo HTML y muestra textarea", () => {
+  it("ejecuta toggleHeading({ level: 2 }) al hacer click en H2", () => {
     render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("📝 HTML"));
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("H2"));
+    expect(toggleHeadingMock).toHaveBeenCalledWith({ level: 2 });
+    expect(runMock).toHaveBeenCalled();
   });
 
-  it("permite modificar HTML y guardar cambios", () => {
-    const onChange = vi.fn();
-    render(<MiniEditor value="<p>hola</p>" onChange={onChange} />);
-    fireEvent.click(screen.getByText("📝 HTML"));
-    const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
-    fireEvent.change(textarea, { target: { value: "<p>nuevo</p>" } });
-    fireEvent.click(screen.getByText("Guardar HTML"));
-    expect(onChange).toHaveBeenCalledWith("<p>nuevo</p>");
-  });
-
-  it("cierra modo HTML sin guardar", () => {
-    const onChange = vi.fn();
-    render(<MiniEditor value="<p>hola</p>" onChange={onChange} />);
-    fireEvent.click(screen.getByText("📝 HTML"));
-    const textarea = screen.getByRole("textbox");
-    fireEvent.change(textarea, { target: { value: "<p>cambio</p>" } });
-    fireEvent.click(screen.getByText(/Volver/));
-    expect(onChange).not.toHaveBeenCalled();
-  });
-
-  it("expande y cierra el editor", () => {
+  it("ejecuta unsetLink al hacer click en Unlink", () => {
     render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("Expandir"));
-    expect(screen.getByText("Cerrar")).toBeInTheDocument();
-    fireEvent.click(screen.getByText("Cerrar"));
-    expect(screen.queryByText("Cerrar")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText("Unlink"));
+    expect(unsetLinkMock).toHaveBeenCalled();
+    expect(runMock).toHaveBeenCalled();
   });
 
-  it("intenta insertar link cuando prompt devuelve URL", () => {
-    vi.spyOn(window, "prompt").mockReturnValue("https://ejemplo.com");
-    render(<MiniEditor value="<p>link</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("🔗"));
-    expect(window.prompt).toHaveBeenCalledWith("Ingresa la URL");
-  });
-
-  it("no inserta link cuando prompt devuelve null", () => {
-    vi.spyOn(window, "prompt").mockReturnValue(null);
-    render(<MiniEditor value="<p>link</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("🔗"));
-    expect(window.prompt).toHaveBeenCalled();
-  });
-
-  it("ejecuta unsetLink al hacer click en ❌🔗", () => {
-    render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("❌🔗"));
-    expect(screen.getByText("❌🔗")).toBeInTheDocument();
-  });
-
-  it("ejecuta toggleCodeBlock al hacer click en </>", () => {
+  it("ejecuta toggleCode al hacer click en </>", () => {
     render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
     fireEvent.click(screen.getByText("</>"));
-    expect(screen.getByText("</>")).toBeInTheDocument();
+    expect(toggleCodeMock).toHaveBeenCalled();
+    expect(runMock).toHaveBeenCalled();
   });
 
-  it("ejecuta toggleBold cuando se hace click en B", () => {
+  it("ejecuta toggleCodeBlock al hacer click en Code Block", () => {
+    render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
+    fireEvent.click(screen.getByText("Code Block"));
+    expect(toggleCodeBlockMock).toHaveBeenCalled();
+    expect(runMock).toHaveBeenCalled();
+  });
+
+  it("ejecuta setLink con la URL del prompt", () => {
+    vi.spyOn(window, "prompt").mockReturnValue("https://flik.cl");
+    render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
+    fireEvent.click(screen.getByText("Link"));
+    expect(setLinkMock).toHaveBeenCalledWith({
+      href: "https://flik.cl",
+      target: "_blank",
+      rel: "noopener noreferrer",
+    });
+    expect(runMock).toHaveBeenCalled();
+  });
+
+  it("no llama a setLink si el prompt devuelve null", () => {
+    vi.spyOn(window, "prompt").mockReturnValue(null);
+    render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
+    fireEvent.click(screen.getByText("Link"));
+    expect(setLinkMock).not.toHaveBeenCalled();
+  });
+
+  describe("Imagen", () => {
+    it("sube imagen correctamente", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValue({
+        ok: true,
+        json: async () => ({ url: "/uploads/fake.png" }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const fakeFile = new File(["x"], "test.png", { type: "image/png" });
+
+      render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
+      const input = screen.getByLabelText("Img");
+      fireEvent.change(input, { target: { files: [fakeFile] } });
+
+      await waitFor(() => {
+        expect(setImageMock).toHaveBeenCalledWith({ src: "/uploads/fake.png" });
+        expect(runMock).toHaveBeenCalled();
+      });
+    });
+
+    it("muestra alert si fetch devuelve ok=false", async () => {
+      vi.spyOn(global, "fetch").mockResolvedValue({
+        ok: false,
+        text: async () => "falló",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+
+      const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
+      const fakeFile = new File(["x"], "test.png", { type: "image/png" });
+
+      render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
+      const input = screen.getByLabelText("Img");
+      fireEvent.change(input, { target: { files: [fakeFile] } });
+
+      await waitFor(() => {
+        expect(alertMock).toHaveBeenCalledWith(
+          "Error al subir la imagen: falló",
+        );
+      });
+    });
+
+    it("muestra alert si fetch lanza excepción", async () => {
+      vi.spyOn(global, "fetch").mockRejectedValue(
+        new Error("network exploded"),
+      );
+      const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
+      const fakeFile = new File(["x"], "test.png", { type: "image/png" });
+
+      render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
+      const input = screen.getByLabelText("Img");
+      fireEvent.change(input, { target: { files: [fakeFile] } });
+
+      await waitFor(() => {
+        expect(alertMock).toHaveBeenCalledWith(
+          expect.stringContaining("network exploded"),
+        );
+      });
+    });
+  });
+
+  describe("Expandir / Cerrar", () => {
+    it("muestra modal al hacer click en Expandir y lo cierra en Cerrar", () => {
+      render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
+      fireEvent.click(screen.getByText("Expandir"));
+      expect(screen.getByText("Cerrar")).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText("Cerrar"));
+      expect(screen.queryByText("Cerrar")).not.toBeInTheDocument();
+    });
+  });
+
+  it("llama a onChange cuando onUpdate se dispara", async () => {
     const onChange = vi.fn();
-    render(<MiniEditor value="<p>hola</p>" onChange={onChange} />);
-    const boldButton = screen.getByText("B");
-    fireEvent.click(boldButton);
-    expect(boldButton).toBeInTheDocument();
-  });
 
-  it("ejecuta toggleBold en modo expanded al hacer click en B", () => {
-    const spy = vi.spyOn(Editor.prototype, "chain").mockReturnValue({
-      focus: () => ({
-        toggleBold: () => ({
-          run: () => true,
-        }),
-      }),
+    // ⚡ resetear módulos antes de redefinir el mock
+    vi.resetModules();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let capturedOnUpdate: any;
+
+    vi.doMock("@tiptap/react", () => ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-
-    render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("Expandir"));
-    const boldButtons = screen.getAllByText("B");
-    fireEvent.click(boldButtons[boldButtons.length - 1]);
-    spy.mockRestore();
-  });
-
-  it("ejecuta setLink en modo expanded al ingresar URL", () => {
-    vi.spyOn(window, "prompt").mockReturnValue("https://ejemplo.com");
-    const spy = vi.spyOn(Editor.prototype, "chain").mockReturnValue({
-      focus: () => ({
-        extendMarkRange: () => ({
-          setLink: () => ({
-            run: () => true,
-          }),
-        }),
-      }),
+      EditorContent: (props: any) => <div data-testid="editor" {...props} />,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-    render(<MiniEditor value="<p>link</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("Expandir"));
-    const linkButtons = screen.getAllByText("🔗");
-    fireEvent.click(linkButtons[linkButtons.length - 1]);
-    expect(window.prompt).toHaveBeenCalledWith("Ingresa la URL");
-    expect(spy).toHaveBeenCalled();
-    spy.mockRestore();
+      useEditor: (options?: any) => {
+        capturedOnUpdate = options?.onUpdate; // guardamos el callback
+        return {
+          chain: () => ({ focus: () => ({}) }),
+          getHTML: () => "<p>desde test</p>",
+        };
+      },
+    }));
+
+    // importar MiniEditor con el mock fresco
+    const { default: MiniEditorWithUpdate } = await import("./MiniEditor");
+
+    render(<MiniEditorWithUpdate value="<p>hola</p>" onChange={onChange} />);
+
+    // forzar el callback manualmente
+    capturedOnUpdate?.({ editor: { getHTML: () => "<p>desde test</p>" } });
+
+    expect(onChange).toHaveBeenCalledWith("<p>desde test</p>");
   });
 
-  it("ejecuta unsetLink en modo expanded", () => {
-    const spy = vi.spyOn(Editor.prototype, "chain").mockReturnValue({
-      focus: () => ({
-        unsetLink: () => ({
-          run: () => true,
-        }),
-      }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-    render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("Expandir"));
-    const unsetButtons = screen.getAllByText("❌🔗");
-    fireEvent.click(unsetButtons[unsetButtons.length - 1]);
-    expect(spy).toHaveBeenCalled();
-    spy.mockRestore();
-  });
+  it("retorna null si useEditor devuelve null", async () => {
+    vi.resetModules();
 
-  it("ejecuta toggleCodeBlock en modo expanded", () => {
-    const spy = vi.spyOn(Editor.prototype, "chain").mockReturnValue({
-      focus: () => ({
-        toggleCodeBlock: () => ({
-          run: () => true,
-        }),
-      }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-    render(<MiniEditor value="<p>hola</p>" onChange={() => {}} />);
-    fireEvent.click(screen.getByText("Expandir"));
-    const codeButtons = screen.getAllByText("</>");
-    fireEvent.click(codeButtons[codeButtons.length - 1]);
-    expect(spy).toHaveBeenCalled();
-    spy.mockRestore();
-  });
+    // ⚡ Mock especial: useEditor devuelve null
+    vi.doMock("@tiptap/react", () => ({
+      EditorContent: () => <div data-testid="editor" />,
+      useEditor: () => null,
+    }));
 
-  it("cubre textarea, Guardar HTML y Volver al editor en expanded", () => {
-    const onChange = vi.fn();
-    render(<MiniEditor value="<p>hola</p>" onChange={onChange} />);
+    const { default: MiniEditorWithNull } = await import("./MiniEditor");
 
-    // Expandir editor
-    fireEvent.click(screen.getByText("Expandir"));
+    const { container } = render(
+      <MiniEditorWithNull value="<p>hola</p>" onChange={() => {}} />,
+    );
 
-    // Activar HTML dentro del expanded
-    const htmlButtons = screen.getAllByText("📝 HTML");
-    fireEvent.click(htmlButtons[htmlButtons.length - 1]);
-
-    // Buscar el último textarea (expanded)
-    const textareas = screen.getAllByRole("textbox");
-    const textarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
-    fireEvent.change(textarea, { target: { value: "<p>nuevo</p>" } });
-    expect(textarea.value).toBe("<p>nuevo</p>");
-
-    // Click en el Guardar HTML correcto (expanded)
-    const guardarButtons = screen.getAllByText("Guardar HTML");
-    fireEvent.click(guardarButtons[guardarButtons.length - 1]);
-    expect(onChange).toHaveBeenCalledWith("<p>nuevo</p>");
-
-    // Reabrir HTML y volver al editor
-    const htmlButtonsAgain = screen.getAllByText("📝 HTML");
-    fireEvent.click(htmlButtonsAgain[htmlButtonsAgain.length - 1]);
-
-    const volverButtons = screen.getAllByText("Volver al editor");
-    fireEvent.click(volverButtons[volverButtons.length - 1]);
-
-    // El textarea ya no debería estar visible
-    expect(screen.queryByRole("textbox")).toBeNull();
+    // si retorna null, el contenedor está vacío
+    expect(container).toBeEmptyDOMElement();
   });
 });

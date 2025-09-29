@@ -10,6 +10,7 @@ import * as Sentry from "@sentry/nextjs";
 import { TrackView } from "@/components/TrackView";
 import { getViews } from "@/lib/getViews";
 import { ShareButtons } from "@/components/ShareButtons";
+import { PostTag, Tag } from "@/types/tags";
 
 export async function generateMetadata({
   params,
@@ -80,7 +81,6 @@ export default async function PostPage({
     post.category?.slug ?? "",
     post.slug,
   );
-  const url = `https://flik.cl/posts/${post.slug}`;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -133,7 +133,7 @@ export default async function PostPage({
           />
         </div>
 
-        <h2 className="text-lg leading mt-8">{post.excerpt}</h2>
+        <h2 className="text-lg leading my-8">{post.excerpt}</h2>
 
         {/* <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
           <Link href="https://fintual.cl/r/gonzalob6a" target="_blank">
@@ -154,6 +154,18 @@ export default async function PostPage({
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </article>
+
+      <div className="mt-4 flex gap-4">
+        {post.post_tags?.map((pt: PostTag) => (
+          <Link
+            key={pt.tags.id}
+            href={`/tags/${pt.tags.slug}`}
+            className="px-3 py-1 ml-2 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-200"
+          >
+            #{pt.tags.name}
+          </Link>
+        ))}
+      </div>
 
       <ShareButtons post={post} />
 

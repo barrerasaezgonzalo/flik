@@ -1,4 +1,5 @@
 import { Category } from "./category";
+import { PostTag } from "./tags";
 
 export type Post = {
   id: string;
@@ -12,6 +13,7 @@ export type Post = {
   category_id: string;
   featured?: boolean;
   category?: Category; // se completa en los mappers con getPosts, getPostBySlug, etc.
+  post_tags: PostTag[];
 };
 
 export interface PostListItemProps {

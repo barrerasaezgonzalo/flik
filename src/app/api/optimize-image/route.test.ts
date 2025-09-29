@@ -1,96 +1,100 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type * as OptimizeRoute from "./route";
+import { waitFor } from "@testing-library/react";
 
 // Mocks
-const existsSyncMock = vi.fn();
-const writeFileMock = vi.fn();
-const resizeMock = vi.fn();
-const pngMock = vi.fn();
-const toBufferMock = vi.fn();
+const mkdirMock = vi.fn();
+const toFileMock = vi.fn();
 
-// Mock fs
-vi.mock("fs", () => ({
+vi.mock("fs/promises", () => ({
   default: {
-    existsSync: existsSyncMock,
-    promises: {
-      writeFile: writeFileMock,
-    },
+    mkdir: mkdirMock,
   },
-  existsSync: existsSyncMock,
-  promises: {
-    writeFile: writeFileMock,
-  },
+  mkdir: mkdirMock,
 }));
 
-// Mock sharp
-vi.mock("sharp", () => ({
-  default: vi.fn(() => ({
-    resize: resizeMock.mockReturnThis(),
-    png: pngMock.mockReturnThis(),
-    toBuffer: toBufferMock,
-  })),
-}));
+vi.mock("sharp", () => {
+  return {
+    default: vi.fn(() => ({
+      resize: vi.fn().mockReturnThis(),
+      png: vi.fn().mockReturnThis(),
+      toFile: toFileMock,
+    })),
+  };
+});
 
 let POST: typeof OptimizeRoute.POST;
 
-describe("API /optimize route", () => {
+describe("API /optimize-image route", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const route = await import("./route");
     POST = route.POST;
   });
 
-  it("devuelve 404 si el archivo no existe", async () => {
-    existsSyncMock.mockReturnValue(false);
+  it("devuelve 400 si no se envía archivo", async () => {
+    const req: any = {
+      formData: async () => new FormData(), // vacío
+    };
 
-    const req = new Request("http://localhost/api/optimize", {
-      method: "POST",
-      body: JSON.stringify({ fileName: "missing.png" }),
-    });
-
-    const res = await POST(req as any);
+    const res = await POST(req);
     const json = await res.json();
 
-    expect(res.status).toBe(404);
-    expect(json).toEqual({
-      ok: false,
-      error: "El archivo no existe en /public",
-    });
+    expect(res.status).toBe(400);
+    expect(json).toEqual({ ok: false, error: "No se envió archivo" });
   });
 
-  it("optimiza la imagen correctamente", async () => {
-    existsSyncMock.mockReturnValue(true);
-    toBufferMock.mockResolvedValue(Buffer.from("fakeimg"));
-
-    const req = new Request("http://localhost/api/optimize", {
-      method: "POST",
-      body: JSON.stringify({ fileName: "test.png" }),
+  it("optimiza la imagen y devuelve la URL", async () => {
+    const fakeFile = new File(["fakecontent"], "test.png", {
+      type: "image/png",
     });
+    // forzamos un arrayBuffer válido
+    /* @ts-expect-error sobreescribimos un método */
+    fakeFile.arrayBuffer = async () => Buffer.from("fakecontent");
 
-    const res = await POST(req as any);
+    const form = new FormData();
+    form.set("file", fakeFile);
+
+    toFileMock.mockResolvedValue(undefined);
+
+    const req: any = {
+      formData: async () => form,
+    };
+
+    const res = await POST(req);
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json).toEqual({ ok: true });
-    expect(writeFileMock).toHaveBeenCalled();
+    expect(json.ok).toBe(true);
+    expect(json.url).toMatch(/^\/uploads\/\d+-test\.png$/);
+    expect(mkdirMock).toHaveBeenCalled();
+    expect(toFileMock).toHaveBeenCalled();
   });
 
   it("devuelve 500 si ocurre un error inesperado", async () => {
-    existsSyncMock.mockImplementation(() => {
-      throw new Error("fs error");
+    const fakeFile = new File(["fakecontent"], "fail.png", {
+      type: "image/png",
     });
+    // sobreescribimos arrayBuffer para que sea válido
+    /* @ts-expect-error sobreescribimos un método */
+    fakeFile.arrayBuffer = async () => Buffer.from("fakecontent");
 
-    const req = new Request("http://localhost/api/optimize", {
-      method: "POST",
-      body: JSON.stringify({ fileName: "test.png" }),
-    });
+    const form = new FormData();
+    form.set("file", fakeFile);
 
-    const res = await POST(req as any);
+    toFileMock.mockRejectedValue(new Error("sharp error"));
+
+    const req: any = {
+      formData: async () => form,
+    };
+
+    const res = await POST(req);
     const json = await res.json();
-
-    expect(res.status).toBe(500);
-    expect(json.ok).toBe(false);
-    expect(json.error).toContain("Error: fs error");
+    await waitFor(() => {
+      expect(res.status).toBe(500);
+      expect(json.ok).toBe(false);
+      expect(json.error).toContain("sharp error");
+    });
   });
 });

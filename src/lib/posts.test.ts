@@ -9,17 +9,35 @@ import {
 } from "./posts";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import * as Sentry from "@sentry/nextjs";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+/* @ts-expect-error */
+import {
+  __fromMock as fromMock,
+  __orderMock,
+  __singleMock,
+} from "./supabaseClient";
 
 vi.mock("@sentry/nextjs", () => ({
   captureException: vi.fn(),
 }));
 
-// ---- Mock de supabase ----
 vi.mock("./supabaseClient", () => {
-  const fromMock = vi.fn();
+  const orderMock = vi.fn();
+  const singleMock = vi.fn();
+  const eqMock = vi.fn(() => ({ single: singleMock }));
+  const selectMock = vi.fn(() => ({
+    eq: eqMock,
+    order: orderMock,
+  }));
+  const fromMock = vi.fn(() => ({ select: selectMock }));
+
   return {
     supabase: { from: fromMock },
     __fromMock: fromMock,
+    __selectMock: selectMock,
+    __eqMock: eqMock,
+    __singleMock: singleMock,
+    __orderMock: orderMock, // 👈 ahora sí existe
   };
 });
 
@@ -28,9 +46,11 @@ vi.mock("next/cache", () => ({
   unstable_noStore: vi.fn(),
 }));
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-/* @ts-expect-error */
-import { __fromMock as fromMock } from "./supabaseClient";
+vi.mock("./categories", () => {
+  return {
+    getCategories: vi.fn().mockResolvedValue([]), // devuelve arreglo vacío
+  };
+});
 
 describe("posts lib", () => {
   beforeEach(() => {
@@ -628,5 +648,43 @@ describe("posts lib", () => {
     const result = await getAdjacentPosts("p2");
     expect(result.prev?.slug).toBe("p1");
     expect(result.next).toBeNull();
+  });
+
+  it("devuelve post_tags vacío siempre", async () => {
+    __orderMock.mockResolvedValueOnce({
+      data: [{ id: "p1", title: "demo", category_id: "no-match" }],
+      error: null,
+    });
+
+    const posts = await getPosts();
+    expect(posts[0].post_tags).toEqual([]);
+    expect(posts[0].category).toEqual({ slug: "", name: "" });
+  });
+
+  it("mapea post_tags (objeto y array)", async () => {
+    __singleMock.mockResolvedValueOnce({
+      data: {
+        id: "p1",
+        slug: "demo",
+        title: "Demo Post",
+        post_tags: [
+          { tag_id: "t1", tags: { id: "1", name: "UI", slug: "ui" } }, // objeto
+          {
+            tag_id: "t2",
+            tags: [
+              { id: "2", name: "DX", slug: "dx" }, // array
+              { id: "3", name: "React", slug: "react" },
+            ],
+          },
+        ],
+        category_id: null,
+      },
+      error: null,
+    });
+
+    const post = await getPostBySlug("demo");
+
+    expect(post?.post_tags[0].tags.name).toBe("UI");
+    expect(post?.post_tags[1].tags.name).toBe("DX");
   });
 });
