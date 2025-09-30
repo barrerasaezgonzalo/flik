@@ -57,7 +57,7 @@ export default function AboutPage() {
         Si en algún momento tienes críticas, detectas algún problema con el
         contenido, necesitas que eliminemos una publicación, o simplemente
         quieres darnos ideas para mejorar, puedes escribirnos a{" "}
-        <a href="mailto:hola@flik.cl">hola@flik.cl</a>.
+        <span className="text-green-600">hola@flik.cl</span>.
       </p>
 
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">

@@ -42,7 +42,7 @@ export default function ContactoPage() {
         espacio que busca aprender, equivocarse y mejorar día a día.{" "}
       </p>
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
-        <Link href="/contacto">
+        <Link href="/contact">
           <Image
             src="/ads/publica.png"
             alt="¿Quieres colabrar o proponer un tema?, escríbenos"
