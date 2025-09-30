@@ -116,30 +116,7 @@ export default function AdminPage() {
                   >
                     Ver
                   </Link>
-                  <button
-                    onClick={async () => {
-                      try {
-                        const fileName = post.image.replace(/^\//, ""); // quita el "/" inicial
-                        const res = await fetch("/api/optimize-image", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ fileName }),
-                        });
-                        const data = await res.json();
-                        if (data.ok) {
-                          alert("✅ Imagen optimizada correctamente");
-                        } else {
-                          alert("⚠️ Error: " + data.error);
-                        }
-                      } catch (err) {
-                        alert("❌ Error optimizando imagen");
-                        console.error(err);
-                      }
-                    }}
-                    className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-                  >
-                    Optimizar
-                  </button>
+                  
                   <button
                     onClick={() => deletePost(post.slug)}
                     className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"

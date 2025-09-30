@@ -67,6 +67,12 @@ export default async function TagPage({
 
   return (
     <div className="max-w-4xl mx-auto">
+      <Link
+    href="/tags"
+    className="inline-block mb-4 text-green-600 hover:underline"
+  >
+    ← Volver a todos los tags
+  </Link>
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
         Posts con tag: #{tag.name}
       </h1>
@@ -78,19 +84,6 @@ export default async function TagPage({
             vayas 👀, en Flik tenemos artículos sobre programación, IA,
             seguridad y mucho más.
           </p>
-          <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
-            <Link href="/contact">
-              <Image
-                src="/ads/publica.png"
-                alt="¿Quieres colabrar o proponer un tema?, escríbenos"
-                width={900}
-                height={185}
-                quality={75}
-                sizes="100vw"
-                className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
-              />
-            </Link>
-          </div>
         </>
       )}
 
