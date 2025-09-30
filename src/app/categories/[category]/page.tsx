@@ -121,7 +121,7 @@ export default async function CategoryPage(props: any) {
       <h2 className="mb-8">{category.description}</h2>
 
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
-        <Link href="/contacto">
+        <Link href="/contact">
           <Image
             src="/ads/publica.png"
             alt="¿Quieres colabrar o proponer un tema?, escríbenos"

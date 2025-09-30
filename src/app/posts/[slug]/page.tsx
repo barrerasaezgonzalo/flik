@@ -155,7 +155,7 @@ export default async function PostPage({
         />
       </article>
 
-      <div className="mt-4 flex gap-4">
+      <div className="mt-4 flex gap-4 flex-wrap">
         {post.post_tags?.map((pt: PostTag) => (
           <Link
             key={pt.tags.id}

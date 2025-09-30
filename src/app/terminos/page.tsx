@@ -46,7 +46,7 @@ export default function TerminosPage() {
       <h2>6. Contacto</h2>
       <p className="mb-4">
         Para cualquier consulta relacionada con estos términos y condiciones,
-        puedes escribir a <a href="mailto:hola@flik.cl">hola@flik.cl</a>.
+        puedes escribir a <span className="text-green-600">hola@flik.cl</span>.
       </p>
     </div>
   );
