@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Search from "./Search";
 import { vi } from "vitest";
-import React from "react";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 // mock de useRouter de next/navigation
 const pushMock = vi.fn();
@@ -61,7 +61,7 @@ describe("Search component", () => {
     expect(input).toHaveValue("");
   });
 
-  it("ejecuta router.push y onClose al enviar con query", () => {
+  it("ejecuta router.push  al enviar con query", () => {
     const handleClose = vi.fn();
     const router = useRouter();
 
@@ -78,7 +78,5 @@ describe("Search component", () => {
 
     // ✅ router.push llamado con la query
     expect(router.push).toHaveBeenCalledWith("/search?q=react");
-    // ✅ onClose ejecutado
-    expect(handleClose).toHaveBeenCalled();
   });
 });

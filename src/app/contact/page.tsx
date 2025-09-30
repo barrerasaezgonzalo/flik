@@ -35,7 +35,7 @@ export default function ContactoPage() {
         antes posible:
       </p>
       <p className="text-lg font-semibold mb-4">
-        ✉️ <a href="mailto:hola@flik.cl">hola@flik.cl</a>
+        ✉️ <span className="text-green-500">hola@flik.cl</span>
       </p>
       <p className="mb-4">
         Gracias por ser parte de esta comunidad tecnológica y por apoyar este

@@ -1,28 +1,24 @@
 "use client";
-
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Search from "./Search";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   FaAlignJustify,
   FaSignsPost,
   FaLightbulb,
   FaBookmark,
   FaMugSaucer,
-  FaMagnifyingGlass,
   FaXmark,
 } from "react-icons/fa6";
 
 export default function Header() {
-  const [open, setOpen] = useState(false); // menú mobile
-  const [openSearch, setOpenSearch] = useState(false); // buscador único
+  const [open, setOpen] = useState(false);
+  const [openSearch, setOpenSearch] = useState(false);
 
-  // 👇 Efecto para cerrar buscador al cambiar de viewport
   useEffect(() => {
     const handleResize = () => {
-      // Si cambia el ancho de pantalla y supera breakpoint md (768px),
-      // reseteamos el buscador
       if (window.innerWidth >= 768) {
         setOpen(false);
         setOpenSearch(false);
@@ -33,10 +29,13 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    setOpenSearch(open ? true : false);
+  }, [open]);
+
   return (
     <header className="bg-white shadow-sm border-b border-green-600">
       <div className="container mx-auto flex justify-between items-center max-w-4xl px-4 ">
-        {/* Logo */}
         <div className="text-2xl font-bold text-black flex items-center">
           <Link href="/">
             <Image
@@ -49,7 +48,6 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Botón hamburguesa en mobile */}
         <button
           className="md:hidden text-2xl text-black cursor-pointer"
           onClick={() => setOpen(!open)}
@@ -63,7 +61,6 @@ export default function Header() {
           )}
         </button>
 
-        {/* Nav en desktop */}
         <nav className="hidden md:flex md:items-center md:space-x-6">
           <ul className="flex">
             <li>
@@ -105,21 +102,20 @@ export default function Header() {
                 onClick={() => setOpenSearch((v) => !v)}
                 aria-expanded={openSearch}
                 aria-controls="site-search"
-                aria-label="Buscar en menú mobile"
-                data-testid="buscar-menu-mobile"
+                aria-label="Buscar"
+                data-testid="buscar-menu-desktop"
                 className="cursor-pointer border-t border-b border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px] focus:outline-none"
               >
-                Buscar
+                Buscar{" "}
+                {openSearch && <FaXmark className="inline-block w-4 h-4" />}
               </button>
             </li>
           </ul>
         </nav>
       </div>
 
-      {/* Buscador único */}
       <Search openSearch={openSearch} onClose={() => setOpenSearch(false)} />
 
-      {/* Menú desplegable en mobile */}
       {open && (
         <div
           data-testid="mobile-menu"
@@ -130,7 +126,9 @@ export default function Header() {
               <Link
                 href="/"
                 className="inline-flex items-center text-black hover:text-green-600 transition-colors"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                }}
               >
                 <FaSignsPost className="w-7 h-7" />{" "}
                 <p className="ml-4">Posts</p>
@@ -165,18 +163,6 @@ export default function Header() {
                 <FaMugSaucer className="w-7 h-7" />{" "}
                 <p className="ml-4">Contacto</p>
               </Link>
-            </li>
-            <li className="border-b border-gray-200 py-2">
-              <button
-                className="inline-flex items-center text-black hover:text-green-600 transition-colors"
-                onClick={() => {
-                  setOpen(false); // cerrar menú
-                  setOpenSearch(true); // abrir buscador
-                }}
-              >
-                <FaMagnifyingGlass className="w-7 h-7" />{" "}
-                <p className="ml-4">Buscar</p>
-              </button>
             </li>
           </ul>
         </div>

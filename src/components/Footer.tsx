@@ -1,14 +1,41 @@
+// Footer.tsx
+
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { FaArrowUp } from "react-icons/fa";
+
+// extraer esta función
+export function getScrollY(): number {
+  return window.scrollY || document.documentElement.scrollTop;
+}
 
 export default function Footer() {
+  const [visible, setVisible] = useState(false);
+
+  const toggleVisible = () => {
+    const y = getScrollY();
+    setVisible(y > 200);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisible);
+    return () => window.removeEventListener("scroll", toggleVisible);
+  }, []);
+
   return (
     <footer className="bg-gray-100 border-t mt-8 py-6">
       <div className="max-w-4xl mx-auto px-4 flex flex-col gap-6 text-sm text-gray-600">
-        {/* Logo + nombre + navegación estática */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Logo + nombre */}
           <div className="flex items-center gap-3 text-center md:text-left">
             <Link href="/" className="flex items-center gap-2">
               <Image
@@ -24,7 +51,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Links */}
           <nav className="flex flex-wrap items-center gap-4">
             <a href="/about" className="hover:text-gray-800">
               Sobre Flik
@@ -54,6 +80,14 @@ export default function Footer() {
           </nav>
         </div>
       </div>
+      <button
+        onClick={scrollToTop}
+        aria-label="Volver al inicio"
+        className="cursor-pointer fixed bottom-8 right-6 z-50 p-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition"
+        style={{ display: visible ? "block" : "none" }}
+      >
+        <FaArrowUp size={24} />
+      </button>
     </footer>
   );
 }

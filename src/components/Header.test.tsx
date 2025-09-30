@@ -114,8 +114,7 @@ describe("Header component", () => {
     // Abrir buscador desde el menú mobile
     const toggleMenuBtn = screen.getByRole("button", { name: /abrir menú/i });
     fireEvent.click(toggleMenuBtn);
-    const searchBtn = screen.getByTestId("buscar-menu-mobile");
-    fireEvent.click(searchBtn.closest("button")!);
+
     // El componente Search debería estar abierto
     waitFor(() => {
       expect(screen.getByRole("search")).toBeInTheDocument();

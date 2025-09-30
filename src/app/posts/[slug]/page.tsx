@@ -10,7 +10,8 @@ import * as Sentry from "@sentry/nextjs";
 import { TrackView } from "@/components/TrackView";
 import { getViews } from "@/lib/getViews";
 import { ShareButtons } from "@/components/ShareButtons";
-import { PostTag, Tag } from "@/types/tags";
+import { PostTag } from "@/types/tags";
+import React from "react";
 
 export async function generateMetadata({
   params,

@@ -3,11 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { FaMagnifyingGlass, FaDeleteLeft, FaXmark } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaDeleteLeft } from "react-icons/fa6";
 
 export default function Search({
   openSearch,
-  onClose,
 }: {
   openSearch: boolean;
   onClose?: () => void;
@@ -20,9 +19,8 @@ export default function Search({
     e.preventDefault();
     if (!query.trim()) return;
     router.push(`/search?q=${encodeURIComponent(query)}`);
-    if (onClose) onClose();
+    //if (onClose) onClose();
   };
-
   useEffect(() => {
     if (openSearch && inputRef.current) {
       inputRef.current.focus();
@@ -55,7 +53,7 @@ export default function Search({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full text-lg text-black pl-8 pr-8 border-0 border-b border-gray-300 rounded-none focus:outline-none focus:ring-0"
+              className="w-full text-lg text-black pl-12 pr-8 border-0 border-b border-gray-300 rounded-none focus:outline-none focus:ring-0"
               aria-describedby="search-helper"
             />
             {query && (
@@ -77,17 +75,6 @@ export default function Search({
             Ingresa tu búsqueda y presiona{" "}
             <kbd className="px-1 border rounded">Enter</kbd> para ver los
             resultados.{" "}
-          </p>
-          <p className="inline-block text-sm text-gray-500" id="close-search">
-            {" "}
-            o presiona
-            <FaXmark
-              className="inline-block w-5 h-5"
-              onClick={onClose}
-              data-testid="close-search"
-              role="button"
-            />
-            para cerrar el buscador.
           </p>
         </form>
       </div>

@@ -1,3 +1,4 @@
+import React from "react";
 export const metadata = {
   title: "Términos y Condiciones | Blog de tecnología en español",
   description:
@@ -8,7 +9,7 @@ export default function TerminosPage() {
   return (
     <div className="max-w-4xl mx-auto prose prose-lg">
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
-        Términos y condicione
+        Términos y Condiciones
       </h1>
       <p className="mb-4">
         Bienvenido a <strong>Flik</strong>. Al acceder y utilizar este sitio web

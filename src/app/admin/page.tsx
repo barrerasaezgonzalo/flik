@@ -116,7 +116,7 @@ export default function AdminPage() {
                   >
                     Ver
                   </Link>
-                  
+
                   <button
                     onClick={() => deletePost(post.slug)}
                     className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"

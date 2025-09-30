@@ -45,13 +45,7 @@ describe("Contacto Page", () => {
 
     // Check for email contact
     expect(screen.getByText(/escribirme directamente/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /hola@flik.cl/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /hola@flik.cl/i })).toHaveAttribute(
-      "href",
-      "mailto:hola@flik.cl",
-    );
+    expect(screen.getByText("hola@flik.cl")).toBeInTheDocument();
   });
 
   it("includes community message and call to action", () => {

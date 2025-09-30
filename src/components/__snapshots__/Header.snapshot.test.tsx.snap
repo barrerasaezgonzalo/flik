@@ -87,13 +87,14 @@ exports[`Header snapshots > match snapshot render 1`] = `
             <button
               aria-controls="site-search"
               aria-expanded="false"
-              aria-label="Buscar en menú mobile"
+              aria-label="Buscar"
               class="cursor-pointer border-t border-b border-black inline-block text-black hover:text-green-600 px-[30px] py-[10px] focus:outline-none"
-              data-testid="buscar-menu-mobile"
+              data-testid="buscar-menu-desktop"
               role="button"
               type="button"
             >
               Buscar
+               
             </button>
           </li>
         </ul>

@@ -68,11 +68,11 @@ export default async function TagPage({
   return (
     <div className="max-w-4xl mx-auto">
       <Link
-    href="/tags"
-    className="inline-block mb-4 text-green-600 hover:underline"
-  >
-    ← Volver a todos los tags
-  </Link>
+        href="/tags"
+        className="inline-block mb-4 text-green-600 hover:underline"
+      >
+        ← Volver a todos los tags
+      </Link>
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
         Posts con tag: #{tag.name}
       </h1>
