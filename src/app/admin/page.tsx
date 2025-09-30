@@ -109,6 +109,13 @@ export default function AdminPage() {
                   >
                     Editar
                   </Link>
+                  <Link
+                    href={`/posts/${post.slug}`}
+                    className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    target="_blank"
+                  >
+                    Ver
+                  </Link>
                   <button
                     onClick={async () => {
                       try {

@@ -5,27 +5,28 @@ import sharp from "sharp";
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File | null;
+    const { fileName } = await req.json();
 
-    if (!file) {
+    if (!fileName) {
       return NextResponse.json(
-        { ok: false, error: "No se envió archivo" },
+        { ok: false, error: "Falta fileName" },
         { status: 400 },
       );
     }
 
-    // Convertir File → Buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // Ruta de entrada (ej: public/posts/imagen.png)
+    const inPath = path.join(process.cwd(), "public", fileName);
 
-    // Crear carpeta /public/uploads si no existe
+    // Leer archivo original
+    const buffer = await fs.readFile(inPath);
+
+    // Crear carpeta de salida
     const uploadsDir = path.join(process.cwd(), "public", "uploads");
     await fs.mkdir(uploadsDir, { recursive: true });
 
-    // Nombre único (ej: timestamp + nombre original limpio)
-    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-    const outPath = path.join(uploadsDir, fileName);
+    // Nombre optimizado
+    const baseName = path.basename(fileName).replace(/\s+/g, "-");
+    const outPath = path.join(uploadsDir, `opt-${Date.now()}-${baseName}`);
 
     // Optimizar con Sharp
     await sharp(buffer)
@@ -33,8 +34,7 @@ export async function POST(req: NextRequest) {
       .png({ quality: 80, compressionLevel: 9 })
       .toFile(outPath);
 
-    // URL pública
-    const url = `/uploads/${fileName}`;
+    const url = `/uploads/${path.basename(outPath)}`;
 
     return NextResponse.json({ ok: true, url });
   } catch (err) {
