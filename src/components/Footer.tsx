@@ -43,7 +43,7 @@ export default function Footer() {
                 alt="Flik Blog"
                 width={48}
                 height={48}
-                className="w-12 h-auto"
+                className="w-12 h-12 object-contain"
               />
             </Link>
             <p className="text-gray-600 pt-2">

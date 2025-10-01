@@ -10,7 +10,11 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params;
+  let resolvedParams: { slug: string } | undefined = params as { slug: string } | undefined;
+  if (params && typeof (params as unknown as Promise<any>).then === "function") {
+    resolvedParams = await (params as unknown as Promise<{ slug: string }>);
+  }
+  const slug = resolvedParams?.slug;
 
   // Opcional: buscar nombre del tag desde Supabase
   const { data: tag } = await supabase
@@ -37,8 +41,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TagPage({
   params,
 }: {
-  params: { slug: string };
+  params: { slug: string } | Promise<{ slug: string }>;
 }) {
+  let resolvedParams: { slug: string } | undefined = params as { slug: string } | undefined;
+  if (params && typeof (params as unknown as Promise<any>).then === "function") {
+    resolvedParams = await (params as unknown as Promise<{ slug: string }>);
+  }
+  const slug = resolvedParams?.slug;
   const { data: tag, error } = await supabase
     .from("tags")
     .select(
@@ -58,7 +67,7 @@ export default async function TagPage({
       )
     `,
     )
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .single();
 
   if (error || !tag) {

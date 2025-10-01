@@ -8,7 +8,7 @@ import { Post } from "@/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10;
 
 export const metadata: Metadata = {
   title: "Todos los posts | Blog de tecnología en español",
@@ -22,9 +22,13 @@ export const metadata: Metadata = {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams?: { page?: string };
+  searchParams?: { page?: string } | Promise<{ page?: string }>;
 }) {
-  const rawPage = searchParams?.page;
+  let params: { page?: string } | undefined = searchParams as { page?: string } | undefined;
+  if (searchParams && typeof (searchParams as Promise<any>).then === "function") {
+    params = await searchParams as { page?: string };
+  }
+  const rawPage = params?.page;
   const page = rawPage && /^\d+$/.test(rawPage) ? parseInt(rawPage, 10) : 1;
 
   const posts = await getPosts();
@@ -52,7 +56,7 @@ export default async function HomePage({
   );
 
   return (
-    <div className="max-w-4xl mx-auto prose prose-lg">
+    <div className="max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
         Blog de tecnología en español
       </h1>

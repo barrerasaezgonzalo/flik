@@ -9,9 +9,13 @@ import React from "react";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams?: { modo?: string };
+  searchParams?: { modo?: string } | Promise<{ modo?: string }>;
 }): Promise<Metadata> {
-  const isCategorias = searchParams?.modo === "categorias";
+  let params: { modo?: string } | undefined = searchParams as { modo?: string } | undefined;
+  if (searchParams && typeof (searchParams as Promise<any>).then === "function") {
+    params = await searchParams as { modo?: string };
+  }
+  const isCategorias = params?.modo === "categorias";
 
   const pageTitle = isCategorias
     ? "Categorías | Blog de tecnología en español"
@@ -67,8 +71,12 @@ function TituloClient({ modo }: { modo?: string }) {
 export default async function MapaPage({
   searchParams,
 }: {
-  searchParams?: { modo?: string };
+  searchParams?: { modo?: string } | Promise<{ modo?: string }>;
 }) {
+  let params: { modo?: string } | undefined = searchParams as { modo?: string } | undefined;
+  if (searchParams && typeof (searchParams as Promise<any>).then === "function") {
+    params = await searchParams as { modo?: string };
+  }
   const { data: posts } = await supabase
     .from("posts")
     .select("title, slug, category_id")
@@ -98,7 +106,7 @@ export default async function MapaPage({
   return (
     <main className="max-w-4xl mx-auto px-4">
       <Suspense fallback={<h1>Cargando título...</h1>}>
-        <TituloClient modo={searchParams?.modo} />
+  <TituloClient modo={params?.modo} />
       </Suspense>
 
       <div className="space-y-10">
