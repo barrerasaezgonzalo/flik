@@ -53,15 +53,7 @@ export default async function HomePage({
     notFound();
   }
 
-  const commentCounts: Record<string, number> = {};
-  await Promise.all(
-    visiblePosts.map(async (post: Post) => {
-      const comments = await getCommentsByPostId(post.id);
-      commentCounts[post.id] = Array.isArray(comments) ? comments.length : 0;
-    }),
-  );
-
-  return (
+   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
         Blog de tecnología en español
@@ -88,7 +80,6 @@ export default async function HomePage({
           <PostListItem
             key={post.slug}
             post={post}
-            commentCount={commentCounts[post.id] || 0}
             fetchpriority={index === 0 ? "high" : "low"}
           />
         ))}

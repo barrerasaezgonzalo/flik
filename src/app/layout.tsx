@@ -69,7 +69,6 @@ export default function RootLayout({
   return (
     <html lang="es" className={inter.className}>
       <head>
-        <meta property="fm-admin" content="61551505805464" />
         <link rel="icon" href="/favicon.ico" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -79,28 +78,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
 
-        <Script id="disable-ga-if-cookie" strategy="beforeInteractive">
-          {`
-          if (document.cookie.includes('ignore_tracking=true')) {
-            window['ga-disable-G-T1ZKQDYNZZ'] = true;
-          }
-        `}
-        </Script>
 
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=G-T1ZKQDYNZZ`}
-          strategy="lazyOnload"
-          defer
-        />
-
-        <Script id="ga-init" strategy="afterInteractive">
-          {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-T1ZKQDYNZZ');
-              `}
-        </Script>
       </head>
 
       <body className={"bg-gray-50 text-gray-800"} suppressHydrationWarning>
@@ -109,7 +87,47 @@ export default function RootLayout({
           <Header />
           <main className="flex-grow container mx-auto px-4 py-6 sm:py-8">
             {children}
+            <Script id="copy-current-url" strategy="afterInteractive">
+          {`
+            (function () {
+              function copyText(text) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  return navigator.clipboard.writeText(text);
+                }
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                ta.setAttribute('readonly','');
+                ta.style.position = 'absolute';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                return Promise.resolve();
+              }
 
+              function handleClick(e) {
+                var target = e.target.closest('[data-copy-current-url]');
+                if (!target) return;
+                e.preventDefault();
+                var url = target.getAttribute('data-url') || window.location.href;
+                copyText(url).then(function () {
+                alert('¡Enlace copiado al portapapeles!');
+                  var originalTitle = target.getAttribute('title');
+                  target.setAttribute('title', '¡Copiado!');
+                  setTimeout(function(){ 
+                    if (originalTitle) target.setAttribute('title', originalTitle);
+                    else target.removeAttribute('title');
+                  }, 1500);
+                }).catch(function(err){
+                  console.error('No se pudo copiar la URL:', err);
+                });
+              }
+
+              document.addEventListener('click', handleClick);
+            })();
+          `}
+        </Script>
             {process.env.NODE_ENV === "production" && (
               <Script
                 id="cookieyes"

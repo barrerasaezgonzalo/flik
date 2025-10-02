@@ -5,3 +5,13 @@ export type Comment = {
   content: string;
   date: string;
 };
+
+export type CommentsErrors = {
+  email?: string;
+  body?: string;
+};
+
+export interface CommentFormProps {
+  postId: string;
+  comments?: Comment[]; 
+}

@@ -22,21 +22,21 @@ const basePost: Post = {
   category_id: "c1",
   category: { slug: "tech", name: "Tech" },
   created_at: "2025-09-21T00:00:00Z",
+  post_tags: [], // Añadido para cumplir con el tipo Post
 };
 
 describe("PostListItem", () => {
   it("renderiza título, excerpt, categoría y comentarios", () => {
-    render(<PostListItem post={basePost} commentCount={3} />);
+    render(<PostListItem post={basePost} />);
 
     expect(screen.getByText("Título de prueba")).toBeInTheDocument();
     expect(screen.getByText("Un excerpt de prueba")).toBeInTheDocument();
     expect(screen.getByText("Tech")).toBeInTheDocument();
-    expect(screen.getByText("3 comentarios")).toBeInTheDocument();
     expect(screen.getByText("21 de septiembre de 2025")).toBeInTheDocument();
   });
 
   it("tiene links correctos", () => {
-    render(<PostListItem post={basePost} commentCount={0} />);
+    render(<PostListItem post={basePost}  />);
 
     const links = screen.getAllByRole("link", { name: /título de prueba/i });
     expect(links).toHaveLength(2);
@@ -53,14 +53,14 @@ describe("PostListItem", () => {
   });
 
   it("renderiza imagen cuando existe post.image", () => {
-    render(<PostListItem post={basePost} commentCount={0} />);
+    render(<PostListItem post={basePost}  />);
     const img = screen.getByRole("img", { name: /título de prueba/i });
     expect(img).toHaveAttribute("src", "/test.png");
   });
 
   it("cambia atributos de la imagen si fetchpriority='high'", () => {
     render(
-      <PostListItem post={basePost} commentCount={0} fetchpriority="high" />,
+      <PostListItem post={basePost}  fetchpriority="high" />,
     );
     const img = screen.getByRole("img", { name: /título de prueba/i });
 
@@ -70,7 +70,7 @@ describe("PostListItem", () => {
 
   it("no renderiza imagen si post.image está vacío", () => {
     const postWithoutImage = { ...basePost, image: "" };
-    render(<PostListItem post={postWithoutImage} commentCount={0} />);
+    render(<PostListItem post={postWithoutImage}  />);
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
@@ -80,7 +80,7 @@ describe("PostListItem", () => {
       category: undefined,
     };
 
-    render(<PostListItem post={postWithoutCategory} commentCount={0} />);
+    render(<PostListItem post={postWithoutCategory}  />);
 
     // el link de categoría debería tener href="/categories/"
     const categoryLink = screen.getByRole("link", { name: "" }); // no hay texto visible

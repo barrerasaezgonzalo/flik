@@ -26,7 +26,7 @@ export default async function privacyPage() {
         </li>
         <li>
           - Datos de uso recopilados automáticamente (dirección IP, navegador,
-          páginas visitadas) mediante herramientas como Google Analytics y
+          páginas visitadas) mediante herramientas como Cloudflare y
           cookies.
         </li>
       </ul>

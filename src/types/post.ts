@@ -18,7 +18,6 @@ export type Post = {
 
 export interface PostListItemProps {
   post: Post;
-  commentCount: number;
   fetchpriority?: "high" | "low" | "auto";
 }
 

@@ -1,157 +1,149 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { addComment } from "@/lib/comments";
+import { useState, useRef } from "react";
 import { formatDate } from "@/lib/utils";
-import { Comment } from "@/types";
-import React from "react";
+import { addComment } from "@/lib/comments";
+import { useRouter } from 'next/navigation';
+import type { CommentFormProps, CommentsErrors, Comment } from "@/types/comment";
 
-export default function Comments({
-  postId,
-  initialComments,
-}: {
-  postId: string;
-  initialComments: Comment[];
-}) {
+export default function CommentForm({ postId, comments }: CommentFormProps) {
+  const [email, setEmail] = useState("");
+  const [body, setBody] = useState("");
+  const [sending, setSending] = useState(false);
+  const [ok, setOk] = useState(false);
+  const [errors, setErrors] = useState<CommentsErrors>({});
+  const hp = useRef("");
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const max = 500;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const bodyOk = body.trim().length > 0 && body.length <= max;
+  const formOk = emailOk && bodyOk && !sending;
 
-  const [errorEmail, setErrorEmail] = useState<string | null>(null);
-  const [errorContent, setErrorContent] = useState<string | null>(null);
+  function validateLive() {
+    const e: CommentsErrors = {};
+    if (!emailOk) e.email = "Ingresa un correo válido.";
+    if (!bodyOk) e.body = body.trim() ? "Máximo 500 caracteres." : "El comentario no puede estar vacío.";
+    setErrors(e);
+  }
 
-  const handleSubmit = async (formData: FormData): Promise<boolean> => {
-    const email = (formData.get("email") as string)?.trim();
-    const content = (formData.get("content") as string)?.trim();
-
-    let hasError = false;
-
-    if (!email) {
-      setErrorEmail("El correo electrónico es obligatorio.");
-      hasError = true;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorEmail("Ingresa un correo válido.");
-      hasError = true;
-    } else {
-      setErrorEmail(null);
-    }
-
-    if (!content) {
-      setErrorContent("El comentario no puede estar vacío.");
-      hasError = true;
-    } else if (content.length < 5) {
-      setErrorContent("El comentario debe tener al menos 5 caracteres.");
-      hasError = true;
-    } else {
-      setErrorContent(null);
-    }
-
-    if (hasError) return false;
+  async function handleSubmit(e: { preventDefault: () => void }) {
+    e.preventDefault();
+    validateLive();
+    if (!formOk) return;
+    if (hp.current) return; // honeypot
 
     try {
-      await addComment({ postId, email, content });
-      return true;
-    } catch (err) {
-      console.error("Failed to add comment:", err);
-      // Podrías setear un error genérico acá si querés
-      return false;
+      setSending(true);
+      await addComment({ postId, email, content: body });
+      setOk(true);
+      setEmail("");
+      setBody("");
+      setErrors({});
+      router.refresh(); 
+    } finally {
+      setSending(false);
+      setTimeout(() => setOk(false), 3000);
     }
-  };
+  }
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    const ok = await handleSubmit(formData);
-    if (ok) {
-      form.reset(); // 🔒 solo resetea cuando todo fue válido
-      router.refresh(); // 🔄 recarga comentarios desde el servidor
-    }
+  const obf = (e: string) => {
+    if (!e) return "";
+    const [u, d] = e.split("@");
+    return `${u?.slice(0, 2) || ""}***@${d || ""}`;
   };
 
   return (
-    <section className="border-t pt-8 mt-8" aria-labelledby="formTitle">
-      <h2 className="text-2xl font-bold mb-4 sr-only" id="formTitle">
-        Comentarios ({initialComments.length})
-      </h2>
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 text-zinc-200"
+        noValidate
+      >
+        {/* honeypot */}
+        <input
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          className="hidden"
+          onChange={(e) => (hp.current = e.target.value)}
+        />
 
-      <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-        <form
-          ref={formRef}
-          onSubmit={onSubmit}
-          noValidate
-          className="space-y-4"
+        <div className="mb-4">
+          <label className="mb-1 block text-sm text-zinc-300">Correo electrónico</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              validateLive();
+            }}
+            placeholder="tu@correo.com"
+            className={`w-full rounded-lg border bg-zinc-950/60 p-3 outline-none transition ${errors.email ? "border-red-500 focus:ring-2 ring-red-500/40" : "border-zinc-700 focus:ring-2 ring-emerald-500/30"
+              }`}
+          />
+          <p aria-live="polite" className="mt-1 h-4 text-xs text-red-400">
+            {errors.email || " "}
+          </p>
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-1 block text-sm text-zinc-300">Comentario</label>
+          <textarea
+            value={body}
+            onChange={(e) => {
+              setBody(e.target.value);
+              e.target.style.height = "auto";
+              e.target.style.height = e.target.scrollHeight + "px";
+              validateLive();
+            }}
+            placeholder="¿Qué te pareció?"
+            rows={4}
+            maxLength={max}
+            className={`w-full resize-none rounded-lg border bg-zinc-950/60 p-3 outline-none transition ${errors.body ? "border-red-500 focus:ring-2 ring-red-500/40" : "border-zinc-700 focus:ring-2 ring-emerald-500/30"
+              }`}
+          />
+          <div className="mt-1 flex items-center justify-between text-xs">
+            <span aria-live="polite" className="h-4 text-red-400">
+              {errors.body || " "}
+            </span>
+            <span className="text-zinc-400">
+              {body.length}/{max}
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={!formOk}
+          className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Correo electrónico
-            </label>
-            <input
-              autoComplete="email"
-              type="text"
-              id="email"
-              name="email"
-              aria-describedby="emailError"
-              aria-invalid={!!errorEmail}
-              className="text-black w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-            />
-            {errorEmail && (
-              <p id="emailError" className="text-red-600 text-sm mt-1">
-                {errorEmail}
-              </p>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="content"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Comentario
-            </label>
-            <textarea
-              autoComplete="off"
-              id="content"
-              name="content"
-              rows={4}
-              aria-describedby="contentError"
-              aria-invalid={!!errorContent}
-              className="text-black w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-            />
-            {errorContent && (
-              <p id="contentError" className="text-red-600 text-sm mt-1">
-                {errorContent}
-              </p>
-            )}
-          </div>
-          <button
-            aria-label="Enviar comentario"
-            type="submit"
-            className="px-4 py-2 bg-black text-white rounded-md hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition-colors"
-          >
-            Enviar Comentario
-          </button>
-        </form>
-      </div>
+          {sending ? (
+            <>
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />
+              Enviando…
+            </>
+          ) : (
+            "Enviar comentario"
+          )}
+        </button>
 
-      <div className="space-y-6">
-        {initialComments.map((comment) => (
-          <div key={comment.id} className="bg-white p-4 rounded-lg shadow-sm">
-            <div className="flex items-center mb-2">
-              <p className="font-semibold text-gray-800 mr-2">
-                {comment.email}
-              </p>
-              <p className="text-xs text-gray-500">
-                {formatDate(comment.date)}
-              </p>
-            </div>
-            <p className="text-gray-700">{comment.content}</p>
-          </div>
-        ))}
-      </div>
-    </section>
+        {ok && <div className="mt-3 text-sm text-emerald-400">¡Gracias! Tu comentario quedó enviado.</div>}
+      </form>
+
+      <section className="mt-8">
+        <h3 className="mb-3 text-base font-medium text-zinc-200">Comentarios</h3>
+        <ul className="space-y-4">
+          {comments?.map((comment: Comment) => (
+            <li key={comment.id} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+              <div className="mb-1 flex items-center justify-between text-xs text-zinc-400">
+                <span>{obf(comment.email)}</span>
+                <time dateTime={comment.date}>{formatDate(comment.date)}</time>
+              </div>
+              <p className="whitespace-pre-wrap text-sm text-zinc-200">{comment.content}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   );
 }

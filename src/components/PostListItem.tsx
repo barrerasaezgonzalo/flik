@@ -6,7 +6,6 @@ import React from "react";
 
 export default function PostListItem({
   post,
-  commentCount,
   fetchpriority = "auto",
 }: PostListItemProps) {
   return (
@@ -40,8 +39,7 @@ export default function PostListItem({
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded hover:bg-green-200 transition-colors">
                 {post.category?.name ?? ""}
               </span>
-            </Link>
-            <span className="ml-2">{commentCount} comentarios</span>
+            </Link>            
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             <Link

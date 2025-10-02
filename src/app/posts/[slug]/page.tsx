@@ -1,15 +1,16 @@
+
 import { notFound } from "next/navigation";
 import { getPostBySlug, getRelatedPosts, getAdjacentPosts } from "@/lib/posts";
 import { Post } from "@/types";
-import { getCommentsByPostId } from "@/lib/comments";
 import Comments from "@/components/Comments";
+import { getCommentsByPostId } from "@/lib/comments";
 import { formatDate, getReadingTime } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import * as Sentry from "@sentry/nextjs";
-import { ShareButtons } from "@/components/ShareButtons";
 import { PostTag } from "@/types/tags";
 import React from "react";
+import { FaRegCopy  } from "react-icons/fa";
 
 export async function generateMetadata({
   params,
@@ -79,6 +80,7 @@ export default async function PostPage({
     post.slug,
   );
 
+
   return (
     <div className="max-w-4xl mx-auto">
       <article>
@@ -108,23 +110,35 @@ export default async function PostPage({
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mt-4  ">
             {post.title}
+            <span
+              role="button"
+              tabIndex={0}
+              title="Copiar enlace"
+              aria-label="Copiar enlace del post al portapapeles"
+              data-copy-current-url
+              className="inline-flex cursor-pointer ml-4"            >
+              <FaRegCopy  className="w-8 h-8" />
+            </span>
           </h1>
+
           <div className="text-sm text-white mb-2 mt-2 flex items-center">
             <span> {formatDate(post.created_at)}</span>
             <span>⏱ {getReadingTime(post.content)}</span>
           </div>
         </header>
 
-        <div className="w-full mb-8 rounded-lg overflow-hidden bg-gray-200 border border-black">
+        <div className="grid-element mb-8 rounded-lg  bg-gray-200 border border-black">
           <Image
             src={post.image}
             alt={post.title}
             width={1200}
             height={600}
-            className="w-full h-auto rounded-lg"
+            className="w-full h-auto object-contain"
+            priority
             fetchPriority="high"
             quality={75}
           />
+
         </div>
 
         <h2 className="text-lg leading my-8">{post.excerpt}</h2>
@@ -161,7 +175,7 @@ export default async function PostPage({
         ))}
       </div>
 
-      <ShareButtons post={post} />
+
 
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
         <Link
@@ -201,7 +215,7 @@ export default async function PostPage({
         )}
       </div>
 
-      <Comments postId={post.id} initialComments={comments} />
+      <Comments postId={post.id} comments={comments} />
 
       {relatedPosts.length > 0 && (
         <section className="border-t pt-8 mt-12">
@@ -227,6 +241,7 @@ function RelatedPostCard({ post }: { post: Post }) {
             alt={post.title}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
         </div>
         <div className="p-4">

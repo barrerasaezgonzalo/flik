@@ -10,7 +10,7 @@ export default function GlobalLoading() {
   useEffect(() => {
     // Cada vez que cambia el pathname mostramos el spinner brevemente
     setLoading(true);
-    const timeout = setTimeout(() => setLoading(false), 500); // ajusta el tiempo
+    const timeout = setTimeout(() => setLoading(false), 300); // ajusta el tiempo
     return () => clearTimeout(timeout);
   }, [pathname]);
 
