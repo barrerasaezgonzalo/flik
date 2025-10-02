@@ -3,9 +3,6 @@ import type * as SendEmailRoute from "./route";
 
 // Mocks
 const supabaseFromMock = vi.fn();
-const selectMock = vi.fn();
-const eqMock = vi.fn();
-const singleMock = vi.fn();
 const sendMock = vi.fn();
 
 // Mock supabase

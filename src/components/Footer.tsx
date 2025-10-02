@@ -52,31 +52,32 @@ export default function Footer() {
           </div>
 
           <nav className="flex flex-wrap items-center gap-4">
-            <a href="/about" className="hover:text-gray-800">
+            <Link href="/about" className="hover:text-gray-800">
               Sobre Flik
-            </a>
-            <a href="/privacy" className="hover:text-gray-800">
+            </Link>
+            <Link href="/privacy" className="hover:text-gray-800">
               Privacidad
-            </a>
-            <a href="/terminos" className="hover:text-gray-800">
+            </Link>
+            <Link href="/terminos" className="hover:text-gray-800">
               Términos
-            </a>
-            <a href="/tags" className="hover:text-gray-800">
+            </Link>
+            <Link href="/tags" className="hover:text-gray-800">
               Tags
-            </a>
-            <a href="/contact" className="hover:text-gray-800">
+            </Link>
+            <Link href="/contact" className="hover:text-gray-800">
               Contacto
-            </a>
+            </Link>
             <a
               href="https://www.linkedin.com/company/flikcl/"
               target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-gray-800"
             >
               Linkedin
             </a>
-            <a href="/mapa" className="hover:text-gray-800">
+            <Link href="/mapa" className="hover:text-gray-800">
               Mapa
-            </a>
+            </Link>
           </nav>
         </div>
       </div>

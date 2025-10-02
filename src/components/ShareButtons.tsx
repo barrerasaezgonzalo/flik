@@ -1,72 +1,71 @@
 import {
   FaLinkedin,
   FaWhatsapp,
-  FaReddit,
   FaTelegram,
   FaXTwitter,
 } from "react-icons/fa6";
 import React from "react";
+import ViewsCounter from "./ViewsCounter";
+import LikeButton from "@/components/LikeButton";
 
 export function ShareButtons({
   post,
 }: {
-  post: { slug: string; title: string };
+  post: { slug: string; title: string; id: string };
 }) {
   const url = `https://flik.cl/posts/${post.slug}`;
-  const text = `${post.title} ${url}`;
+
+  const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+  const twitterUrl = `https://x.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Échale un vistazo a este artículo de Flik!")}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent("Échale un vistazo a este artículo de Flik! " + url)}`;
+  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Échale un vistazo a este artículo de Flik!")}`;
 
   return (
     <div className="mt-10 p-4 border rounded-lg bg-gray-50 dark:bg-gray-900 text-center">
-      <p className="mb-3 font-medium">
-        📢 ¿Te gustó este artículo? ¡Compártelo!
-      </p>
-      <div className="flex flex-wrap justify-center gap-6">
-        {/* LinkedIn */}
+      <div className="flex items-center justify-center gap-4 mb-4">
+        <LikeButton postId={post.id} />
+        <span> | </span>
+        <ViewsCounter slug={post.slug} />
+      </div>
+      <div className="flex justify-center mb-4">
+        <p className="text-md font-normal text-gray-900 dark:text-gray-100">
+          📢 ¿Te gustó este artículo? ¡Compártelo!
+        </p>
+      </div>
+      <div className="flex items-center justify-center gap-6 mt-6">
         <a
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
+          aria-label="Compartir en LinkedIn"
+          href={linkedInUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-blue-700 hover:underline hover:scale-110 transition"
+          className="flex items-center gap-2 text-white text-sm hover:scale-110  hover:text-[#0A66C2] transition"
         >
           <FaLinkedin className="w-5 h-5" /> LinkedIn
         </a>
-
-        {/* WhatsApp */}
         <a
-          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`}
+          aria-label="Compartir en X (Twitter)"
+          href={twitterUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-green-600 hover:underline hover:scale-110 transition"
-        >
-          <FaWhatsapp className="w-5 h-5" /> WhatsApp
-        </a>
-
-        {/* X / Twitter */}
-        <a
-          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(url)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-white hover:underline hover:scale-110 transition"
+          className="flex items-center gap-2 text-white text-sm hover:scale-110  hover:text-[#1DA1F2] transition"
         >
           <FaXTwitter className="w-5 h-5" /> X
         </a>
-
-        {/* Reddit */}
         <a
-          href={`https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(post.title)}`}
+          aria-label="Compartir en WhatsApp"
+          href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-orange-600 hover:underline hover:scale-110 transition"
+          className="flex items-center gap-2 text-white text-sm hover:scale-110  hover:text-[#25D366] transition"
         >
-          <FaReddit className="w-5 h-5" /> Reddit
+          <FaWhatsapp className="w-5 h-5" /> WhatsApp
         </a>
-
-        {/* Telegram */}
         <a
-          href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(post.title)}`}
+          aria-label="Compartir en Telegram"
+          href={telegramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sky-500 hover:underline hover:scale-110 transition"
+          className="flex items-center gap-2 text-white text-sm hover:text-[#0088CC] transition"
         >
           <FaTelegram className="w-5 h-5" /> Telegram
         </a>

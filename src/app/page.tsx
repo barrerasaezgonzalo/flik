@@ -24,9 +24,15 @@ export default async function HomePage({
 }: {
   searchParams?: { page?: string } | Promise<{ page?: string }>;
 }) {
-  let params: { page?: string } | undefined = searchParams as { page?: string } | undefined;
-  if (searchParams && typeof (searchParams as Promise<any>).then === "function") {
-    params = await searchParams as { page?: string };
+  let params: { page?: string } | undefined = searchParams as
+    | { page?: string }
+    | undefined;
+  if (
+    searchParams &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    typeof (searchParams as Promise<any>).then === "function"
+  ) {
+    params = (await searchParams) as { page?: string };
   }
   const rawPage = params?.page;
   const page = rawPage && /^\d+$/.test(rawPage) ? parseInt(rawPage, 10) : 1;

@@ -1,4 +1,4 @@
-  import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getPostsByCategory } from "@/lib/posts";
@@ -19,9 +19,12 @@ export async function generateMetadata({
 }: {
   params: { category: string } | Promise<{ category: string }>;
 }): Promise<Metadata> {
-  let resolvedParams: { category: string } | undefined = params as { category: string } | undefined;
+  let resolvedParams: { category: string } | undefined = params as
+    | { category: string }
+    | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (params && typeof (params as Promise<any>).then === "function") {
-    resolvedParams = await params as { category: string };
+    resolvedParams = (await params) as { category: string };
   }
   const categorySlug = resolvedParams?.category;
 
@@ -83,14 +86,26 @@ export async function generateMetadata({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function CategoryPage(props: any) {
-  let params: { category: string } | undefined = props.params as { category: string } | undefined;
-  if (props.params && typeof (props.params as Promise<any>).then === "function") {
-    params = await props.params as { category: string };
+  let params: { category: string } | undefined = props.params as
+    | { category: string }
+    | undefined;
+  if (
+    props.params &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    typeof (props.params as Promise<any>).then === "function"
+  ) {
+    params = (await props.params) as { category: string };
   }
   const categorySlug = params?.category;
-  let searchParams: { page?: string } | undefined = props.searchParams as { page?: string } | undefined;
-  if (props.searchParams && typeof (props.searchParams as Promise<any>).then === "function") {
-    searchParams = await props.searchParams as { page?: string };
+  let searchParams: { page?: string } | undefined = props.searchParams as
+    | { page?: string }
+    | undefined;
+  if (
+    props.searchParams &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    typeof (props.searchParams as Promise<any>).then === "function"
+  ) {
+    searchParams = (await props.searchParams) as { page?: string };
   }
   const page = parseInt(searchParams?.page || "1", 10);
 

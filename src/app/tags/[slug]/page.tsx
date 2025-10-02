@@ -10,8 +10,13 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  let resolvedParams: { slug: string } | undefined = params as { slug: string } | undefined;
-  if (params && typeof (params as unknown as Promise<any>).then === "function") {
+  let resolvedParams: { slug: string } | undefined = params as
+    | { slug: string }
+    | undefined;
+  if (
+    params &&
+    typeof (params as unknown as Promise<any>).then === "function"
+  ) {
     resolvedParams = await (params as unknown as Promise<{ slug: string }>);
   }
   const slug = resolvedParams?.slug;
@@ -43,8 +48,13 @@ export default async function TagPage({
 }: {
   params: { slug: string } | Promise<{ slug: string }>;
 }) {
-  let resolvedParams: { slug: string } | undefined = params as { slug: string } | undefined;
-  if (params && typeof (params as unknown as Promise<any>).then === "function") {
+  let resolvedParams: { slug: string } | undefined = params as
+    | { slug: string }
+    | undefined;
+  if (
+    params &&
+    typeof (params as unknown as Promise<any>).then === "function"
+  ) {
     resolvedParams = await (params as unknown as Promise<{ slug: string }>);
   }
   const slug = resolvedParams?.slug;

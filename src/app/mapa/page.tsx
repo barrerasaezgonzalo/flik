@@ -11,9 +11,15 @@ export async function generateMetadata({
 }: {
   searchParams?: { modo?: string } | Promise<{ modo?: string }>;
 }): Promise<Metadata> {
-  let params: { modo?: string } | undefined = searchParams as { modo?: string } | undefined;
-  if (searchParams && typeof (searchParams as Promise<any>).then === "function") {
-    params = await searchParams as { modo?: string };
+  let params: { modo?: string } | undefined = searchParams as
+    | { modo?: string }
+    | undefined;
+  if (
+    searchParams &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    typeof (searchParams as Promise<any>).then === "function"
+  ) {
+    params = (await searchParams) as { modo?: string };
   }
   const isCategorias = params?.modo === "categorias";
 
@@ -73,9 +79,15 @@ export default async function MapaPage({
 }: {
   searchParams?: { modo?: string } | Promise<{ modo?: string }>;
 }) {
-  let params: { modo?: string } | undefined = searchParams as { modo?: string } | undefined;
-  if (searchParams && typeof (searchParams as Promise<any>).then === "function") {
-    params = await searchParams as { modo?: string };
+  let params: { modo?: string } | undefined = searchParams as
+    | { modo?: string }
+    | undefined;
+  if (
+    searchParams &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    typeof (searchParams as Promise<any>).then === "function"
+  ) {
+    params = (await searchParams) as { modo?: string };
   }
   const { data: posts } = await supabase
     .from("posts")
@@ -106,7 +118,7 @@ export default async function MapaPage({
   return (
     <main className="max-w-4xl mx-auto px-4">
       <Suspense fallback={<h1>Cargando título...</h1>}>
-  <TituloClient modo={params?.modo} />
+        <TituloClient modo={params?.modo} />
       </Suspense>
 
       <div className="space-y-10">

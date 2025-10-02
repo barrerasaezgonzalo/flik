@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { ShareButtons } from "./ShareButtons";
 import React from "react";
+import { ShareButtons } from "./ShareButtons";
 
 describe("ShareButtons", () => {
-  const post = { slug: "mi-post", title: "Mi post increíble" };
+  const post = { slug: "mi-post", title: "Mi post increíble", id: "123" };
   const baseUrl = `https://flik.cl/posts/${post.slug}`;
 
   it("muestra el mensaje principal", () => {
@@ -23,30 +23,21 @@ describe("ShareButtons", () => {
     expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it("genera correctamente el enlace de WhatsApp", () => {
-    render(<ShareButtons post={post} />);
-    const link = screen.getByText("WhatsApp").closest("a");
-    expect(link).toHaveAttribute(
-      "href",
-      `https://api.whatsapp.com/send?text=${encodeURIComponent(`${post.title} ${baseUrl}`)}`,
-    );
-  });
-
   it("genera correctamente el enlace de X (Twitter)", () => {
     render(<ShareButtons post={post} />);
     const link = screen.getByText("X").closest("a");
     expect(link).toHaveAttribute(
       "href",
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(baseUrl)}`,
+      `https://x.com/intent/tweet?url=${encodeURIComponent(baseUrl)}&text=${encodeURIComponent("Échale un vistazo a este artículo de Flik!")}`,
     );
   });
 
-  it("genera correctamente el enlace de Reddit", () => {
+  it("genera correctamente el enlace de WhatsApp", () => {
     render(<ShareButtons post={post} />);
-    const link = screen.getByText("Reddit").closest("a");
+    const link = screen.getByText("WhatsApp").closest("a");
     expect(link).toHaveAttribute(
       "href",
-      `https://www.reddit.com/submit?url=${encodeURIComponent(baseUrl)}&title=${encodeURIComponent(post.title)}`,
+      `https://api.whatsapp.com/send?text=${encodeURIComponent("Échale un vistazo a este artículo de Flik! " + baseUrl)}`,
     );
   });
 
@@ -55,7 +46,7 @@ describe("ShareButtons", () => {
     const link = screen.getByText("Telegram").closest("a");
     expect(link).toHaveAttribute(
       "href",
-      `https://t.me/share/url?url=${encodeURIComponent(baseUrl)}&text=${encodeURIComponent(post.title)}`,
+      `https://t.me/share/url?url=${encodeURIComponent(baseUrl)}&text=${encodeURIComponent("Échale un vistazo a este artículo de Flik!")}`,
     );
   });
 });

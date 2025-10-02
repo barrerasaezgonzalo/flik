@@ -7,8 +7,6 @@ import { formatDate, getReadingTime } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import * as Sentry from "@sentry/nextjs";
-import { TrackView } from "@/components/TrackView";
-import { getViews } from "@/lib/getViews";
 import { ShareButtons } from "@/components/ShareButtons";
 import { PostTag } from "@/types/tags";
 import React from "react";
@@ -59,14 +57,12 @@ export async function generateMetadata({
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function PostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const views = await getViews(slug);
   const post = await getPostBySlug(slug);
   const { prev, next } = await getAdjacentPosts(slug);
 
@@ -115,10 +111,7 @@ export default async function PostPage({
           </h1>
           <div className="text-sm text-white mb-2 mt-2 flex items-center">
             <span> {formatDate(post.created_at)}</span>
-            <span>
-              ⏱ {getReadingTime(post.content)} 👁️ {views} visitas
-            </span>
-            <TrackView slug={post.slug} />
+            <span>⏱ {getReadingTime(post.content)}</span>
           </div>
         </header>
 
@@ -207,7 +200,6 @@ export default async function PostPage({
           </Link>
         )}
       </div>
-      <TrackView slug={slug} />
 
       <Comments postId={post.id} initialComments={comments} />
 

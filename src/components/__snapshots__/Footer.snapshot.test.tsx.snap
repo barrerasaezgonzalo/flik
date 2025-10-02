@@ -20,7 +20,7 @@ exports[`Footer snapshots > match snapshot render 1`] = `
           >
             <img
               alt="Flik Blog"
-              class="w-12 h-auto"
+              class="w-12 h-12 object-contain"
               height="48"
               src="/logo.png"
               width="48"
@@ -69,6 +69,7 @@ exports[`Footer snapshots > match snapshot render 1`] = `
           <a
             class="hover:text-gray-800"
             href="https://www.linkedin.com/company/flikcl/"
+            rel="noopener noreferrer"
             target="_blank"
           >
             Linkedin
