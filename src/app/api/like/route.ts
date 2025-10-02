@@ -1,54 +1,72 @@
-import { NextRequest } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+export const runtime = "nodejs"; // GA NO funciona en Edge
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!, // usa la service role key
-);
+import { NextResponse } from "next/server";
+import { BetaAnalyticsDataClient } from "@google-analytics/data";
 
-export async function POST(req: NextRequest) {
-  const { postId } = await req.json();
-
-  // 1. Leer likes actuales
-  const { data: row, error: fetchError } = await supabase
-    .from("post_likes")
-    .select("likes")
-    .eq("post_id", postId)
-    .maybeSingle();
-
-  if (fetchError) {
-    console.error(fetchError);
-    return Response.json({ error: fetchError.message }, { status: 500 });
-  }
-
-  const currentLikes = (row?.likes ?? 0) as number;
-
-  // 2. Guardar likes + 1
-  const { data, error } = await supabase
-    .from("post_likes")
-    .upsert({ post_id: postId, likes: currentLikes + 1 })
-    .select("likes")
-    .single();
-
-  if (error) {
-    console.error(error);
-    return Response.json({ error: error.message }, { status: 500 });
-  }
-
-  return Response.json({ likes: data.likes ?? 0 });
+// Normaliza GA_PRIVATE_KEY para ambos formatos:
+//  A) multilínea tal cual  → solo convierte CRLF a LF
+//  B) una línea con '\n'   → convierte '\n' literales a saltos reales
+function resolvePrivateKey(raw?: string) {
+  if (!raw) return "";
+  const v = raw.includes("\\n") ? raw.replace(/\\n/g, "\n") : raw;
+  return v.replace(/\r\n/g, "\n");
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const postId = searchParams.get("postId");
+  const slug = searchParams.get("slug");
+  if (!slug) return NextResponse.json({ views: 0 });
 
-  const { data, error } = await supabase
-    .from("post_likes")
-    .select("likes")
-    .eq("post_id", postId)
-    .maybeSingle();
+  const clientEmail = process.env.GA_CLIENT_EMAIL;
+  const propertyId = process.env.GA_PROPERTY_ID;
+  const privateKey = resolvePrivateKey(process.env.GA_PRIVATE_KEY);
 
-  if (error || !data) return Response.json({ likes: 0 });
+  if (!clientEmail || !privateKey || !propertyId) {
+    // No exponer secretos; solo booleans para debug
+    console.error(
+      "GA envs missing ->",
+      "email:",
+      !!clientEmail,
+      "key:",
+      !!privateKey,
+      "pid:",
+      !!propertyId,
+    );
+    return NextResponse.json(
+      {
+        error:
+          "GA envs missing (GA_CLIENT_EMAIL / GA_PRIVATE_KEY / GA_PROPERTY_ID)",
+      },
+      { status: 500 },
+    );
+  }
 
-  return Response.json({ likes: data.likes ?? 0 });
+  try {
+    const client = new BetaAnalyticsDataClient({
+      credentials: { client_email: clientEmail, private_key: privateKey },
+    });
+
+    const [report] = await client.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate: "2020-01-01", endDate: "today" }],
+      dimensions: [{ name: "pagePath" }],
+      metrics: [{ name: "screenPageViews" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "pagePath",
+          stringFilter: { value: `/posts/${slug}`, matchType: "BEGINS_WITH" },
+        },
+      },
+    });
+
+    const views = report.rows?.[0]?.metricValues?.[0]?.value ?? "0";
+    return NextResponse.json({ views });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "GA failed";
+    console.error("GA Error:", err);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 }
+
+// (opcional) exporta helper para test
+export { resolvePrivateKey };
