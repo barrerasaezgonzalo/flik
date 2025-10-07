@@ -10,17 +10,15 @@ vi.mock("@/lib/supabaseClient", () => ({
     from: vi.fn(() => ({
       insert: vi.fn(() => ({
         select: vi.fn().mockReturnThis(),
-        single: vi
-          .fn()
-          .mockResolvedValue({
-            data: {
-              id: 1,
-              email: "test@test.com",
-              content: "Hola",
-              date: new Date().toISOString(),
-            },
-            error: null,
-          }),
+        single: vi.fn().mockResolvedValue({
+          data: {
+            id: 1,
+            email: "test@test.com",
+            content: "Hola",
+            date: new Date().toISOString(),
+          },
+          error: null,
+        }),
       })),
       select: vi.fn(() => ({
         eq: vi.fn().mockReturnThis(),

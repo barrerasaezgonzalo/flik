@@ -6,6 +6,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GlobalLoading from "@/components/GlobalLoading";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/constants";
+import Script from "next/script";
+
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -73,6 +75,25 @@ export default function RootLayout({
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
+        />
+
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-T1ZKQDYNZZ"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-T1ZKQDYNZZ');
+          `}
+        </Script>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5063066587377461"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
       </head>
 
