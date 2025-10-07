@@ -2,10 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import type { Metadata } from "next";
+import { SITE_TITLE } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Contacto | Blog de tecnología en español",
-  description: "Ponte en contacto con Flik. Blog de tecnología en español.",
+  title: "Contacto | " + SITE_TITLE,
+  description: "Ponte en contacto con Flik. " + SITE_TITLE,
 };
 
 export default function ContactoPage() {

@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/constants";
 
 export const metadata = {
-  title: "Sobre Flik | Blog de tecnología en español",
-  description:
-    "Conoce la historia de Flik, un blog de tecnología en español con artículos sobre programación, inteligencia artificial, seguridad y más.",
+  title: "Sobre Flik | " + SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: "https://flik.cl/about",
+  },
 };
 
 export default function AboutPage() {

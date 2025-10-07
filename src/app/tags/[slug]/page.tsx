@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { SITE_TITLE } from "@/lib/constants";
 
 type Props = {
   params: { slug: string };
@@ -31,10 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tagName = tag?.name || slug;
 
   return {
-    title: `${tagName} | Flik`,
+    title: `${tagName} | ${SITE_TITLE}`,
     description: `Artículos de Flik sobre ${tagName}. Encuentra todos los posts relacionados con ${tagName}.`,
     openGraph: {
-      title: `${tagName} | Flik`,
+      title: `${tagName} | ${SITE_TITLE}`,
       description: `Descubre todos los artículos relacionados con ${tagName} en Flik.`,
       url: `https://flik.cl/tags/${slug}`,
       siteName: "Flik",

@@ -1,8 +1,8 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import { PostListItemProps } from "@/types";
-import React from "react";
 
 export default function PostListItem({
   post,
@@ -39,7 +39,7 @@ export default function PostListItem({
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded hover:bg-green-200 transition-colors">
                 {post.category?.name ?? ""}
               </span>
-            </Link>            
+            </Link>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             <Link

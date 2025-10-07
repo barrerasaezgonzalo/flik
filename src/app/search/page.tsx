@@ -1,6 +1,5 @@
 import { searchPosts } from "@/lib/posts";
 import { Suspense } from "react";
-import { getCommentsByPostId } from "@/lib/comments";
 import PostListItem from "@/components/PostListItem";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,25 +11,11 @@ function SearchResults({ query }: { query: string }) {
 
 async function SearchResultsComponent({ query }: { query: string }) {
   const posts = await searchPosts(query);
-  const commentCounts: Record<string, number> = {};
-
-  await Promise.all(
-    posts.map(async (post) => {
-      const comments = await getCommentsByPostId(post.id);
-      commentCounts[post.id] = Array.isArray(comments) ? comments.length : 0;
-    }),
-  );
 
   return (
     <div className="space-y-8">
       {posts.length > 0 ? (
-        posts.map((post) => (
-          <PostListItem
-            key={post.slug}
-            post={post}
-            commentCount={commentCounts[post.id] || 0}
-          />
-        ))
+        posts.map((post) => <PostListItem key={post.slug} post={post} />)
       ) : (
         <p className="text-white text-xl text-left">
           Lo sentimos, no encontramos nada con ese término de búsqueda. Pero no

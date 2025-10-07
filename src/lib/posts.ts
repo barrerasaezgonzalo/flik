@@ -1,6 +1,5 @@
 import { Post, Category } from "@/types";
 import { supabase } from "./supabaseClient";
-import * as Sentry from "@sentry/nextjs";
 
 export async function getAdjacentPosts(slug: string) {
   const { data } = await supabase
@@ -22,7 +21,6 @@ export async function getCategories(): Promise<Category[]> {
     .from("categories")
     .select("id,slug,name");
   if (error) {
-    Sentry.captureException(error);
     throw error;
   }
   return data || [];
@@ -43,8 +41,7 @@ export async function getPosts(): Promise<Post[]> {
   ]);
 
   if (error) {
-    Sentry.captureException(error);
-    return [];
+    throw error;
   }
 
   return posts.map((p) => ({
@@ -73,8 +70,7 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
     .single();
 
   if (error || !data) {
-    Sentry.captureException(error);
-    return undefined;
+    throw error;
   }
 
   // obtener categorías para mapear
@@ -112,8 +108,7 @@ export async function getPostsByCategory(
   ]);
 
   if (postsError) {
-    Sentry.captureException(postsError);
-    return [];
+    throw postsError;
   }
 
   const category = categories.find((c) => c.slug === categorySlug);
@@ -143,8 +138,7 @@ export async function searchPosts(query: string): Promise<Post[]> {
   ]);
 
   if (postsError) {
-    Sentry.captureException(postsError);
-    return [];
+    throw postsError;
   }
 
   return posts.map((p) => ({
@@ -174,8 +168,7 @@ export async function getRelatedPosts(
   ]);
 
   if (postsError) {
-    Sentry.captureException(postsError);
-    return [];
+    throw postsError;
   }
 
   const category = categories.find((c) => c.slug === categorySlug);

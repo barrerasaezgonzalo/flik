@@ -36,7 +36,7 @@ describe("PostListItem", () => {
   });
 
   it("tiene links correctos", () => {
-    render(<PostListItem post={basePost}  />);
+    render(<PostListItem post={basePost} />);
 
     const links = screen.getAllByRole("link", { name: /título de prueba/i });
     expect(links).toHaveLength(2);
@@ -53,15 +53,13 @@ describe("PostListItem", () => {
   });
 
   it("renderiza imagen cuando existe post.image", () => {
-    render(<PostListItem post={basePost}  />);
+    render(<PostListItem post={basePost} />);
     const img = screen.getByRole("img", { name: /título de prueba/i });
     expect(img).toHaveAttribute("src", "/test.png");
   });
 
   it("cambia atributos de la imagen si fetchpriority='high'", () => {
-    render(
-      <PostListItem post={basePost}  fetchpriority="high" />,
-    );
+    render(<PostListItem post={basePost} fetchpriority="high" />);
     const img = screen.getByRole("img", { name: /título de prueba/i });
 
     // Next.js agrega cosas distintas en tests, pero podemos verificar atributos básicos
@@ -70,7 +68,7 @@ describe("PostListItem", () => {
 
   it("no renderiza imagen si post.image está vacío", () => {
     const postWithoutImage = { ...basePost, image: "" };
-    render(<PostListItem post={postWithoutImage}  />);
+    render(<PostListItem post={postWithoutImage} />);
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
@@ -80,7 +78,7 @@ describe("PostListItem", () => {
       category: undefined,
     };
 
-    render(<PostListItem post={postWithoutCategory}  />);
+    render(<PostListItem post={postWithoutCategory} />);
 
     // el link de categoría debería tener href="/categories/"
     const categoryLink = screen.getByRole("link", { name: "" }); // no hay texto visible

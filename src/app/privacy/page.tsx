@@ -1,7 +1,8 @@
+import { SITE_TITLE } from "@/lib/constants";
 import React from "react";
 
 export const metadata = {
-  title: "Política de Privacidad | Blog de tecnología en español",
+  title: "Política de Privacidad | " + SITE_TITLE,
   description:
     "Lee la política de privacidad de Flik y cómo protegemos tu información. Blog de tecnología en español.",
 };
@@ -26,8 +27,7 @@ export default async function privacyPage() {
         </li>
         <li>
           - Datos de uso recopilados automáticamente (dirección IP, navegador,
-          páginas visitadas) mediante herramientas como Cloudflare y
-          cookies.
+          páginas visitadas) mediante herramientas como Cloudflare y cookies.
         </li>
       </ul>
       <h2 className="mb-4 font-bold text-xl mt-4">Uso de la información</h2>

@@ -4,12 +4,24 @@ export default function Document() {
   return (
     <Html lang="es">
       <Head>
-        {/* Script de AdSense insertado aquí para evitar data-nscript */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5063066587377461"
         />
-        {/* Puedes agregar aquí otros tags globales del <head> si lo necesitas */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-T1ZKQDYNZZ"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-T1ZKQDYNZZ');
+            `,
+          }}
+        />
       </Head>
       <body>
         <Main />

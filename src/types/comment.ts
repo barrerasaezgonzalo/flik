@@ -13,5 +13,5 @@ export type CommentsErrors = {
 
 export interface CommentFormProps {
   postId: string;
-  comments?: Comment[]; 
+  comments?: Comment[];
 }

@@ -8,18 +8,12 @@ import {
   getAdjacentPosts,
 } from "./posts";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import * as Sentry from "@sentry/nextjs";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-/* @ts-expect-error */
+
 import {
   __fromMock as fromMock,
   __orderMock,
   __singleMock,
 } from "./supabaseClient";
-
-vi.mock("@sentry/nextjs", () => ({
-  captureException: vi.fn(),
-}));
 
 vi.mock("./supabaseClient", () => {
   const orderMock = vi.fn();
@@ -37,18 +31,17 @@ vi.mock("./supabaseClient", () => {
     __selectMock: selectMock,
     __eqMock: eqMock,
     __singleMock: singleMock,
-    __orderMock: orderMock, // 👈 ahora sí existe
+    __orderMock: orderMock,
   };
 });
 
-// ---- Mock de next/cache ----
 vi.mock("next/cache", () => ({
   unstable_noStore: vi.fn(),
 }));
 
 vi.mock("./categories", () => {
   return {
-    getCategories: vi.fn().mockResolvedValue([]), // devuelve arreglo vacío
+    getCategories: vi.fn().mockResolvedValue([]),
   };
 });
 
@@ -57,9 +50,6 @@ describe("posts lib", () => {
     fromMock.mockReset();
   });
 
-  // ------------------------
-  // getPosts
-  // ------------------------
   it("getPosts devuelve posts con categorías", async () => {
     fromMock.mockImplementation((table: string) => {
       if (table === "posts") {
@@ -114,13 +104,9 @@ describe("posts lib", () => {
       }
     });
 
-    const result = await getPosts();
-    expect(result).toEqual([]);
+    await expect(getPosts()).rejects.toThrow("fail");
   });
 
-  // ------------------------
-  // getPostBySlug
-  // ------------------------
   it("getPostBySlug devuelve un post", async () => {
     fromMock.mockImplementation((table: string) => {
       if (table === "posts") {
@@ -148,8 +134,6 @@ describe("posts lib", () => {
     });
 
     const result = await getPostBySlug("p1");
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     expect(result?.category.name).toBe("Tech");
   });
 
@@ -170,13 +154,9 @@ describe("posts lib", () => {
       }
     });
 
-    const result = await getPostBySlug("x");
-    expect(result).toBeUndefined();
+    await expect(getPostBySlug("x")).rejects.toThrow("not found");
   });
 
-  // ------------------------
-  // getPostsByCategory
-  // ------------------------
   it("getPostsByCategory filtra por categoría", async () => {
     fromMock.mockImplementation((table: string) => {
       if (table === "categories") {
@@ -206,8 +186,6 @@ describe("posts lib", () => {
 
     const result = await getPostsByCategory("tech");
     expect(result).toHaveLength(1);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     expect(result[0].category.name).toBe("Tech");
   });
 
@@ -233,9 +211,6 @@ describe("posts lib", () => {
     expect(result).toEqual([]);
   });
 
-  // ------------------------
-  // searchPosts
-  // ------------------------
   it("searchPosts devuelve posts con match", async () => {
     fromMock.mockImplementation((table: string) => {
       if (table === "posts") {
@@ -266,8 +241,6 @@ describe("posts lib", () => {
 
     const result = await searchPosts("hola");
     expect(result[0].title).toBe("hola");
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     expect(result[0].category.slug).toBe("tech");
   });
 
@@ -288,13 +261,9 @@ describe("posts lib", () => {
       }
     });
 
-    const result = await searchPosts("fail");
-    expect(result).toEqual([]);
+    await expect(searchPosts("fail")).rejects.toThrow("fail");
   });
 
-  // ------------------------
-  // getRelatedPosts
-  // ------------------------
   it("getRelatedPosts excluye slug actual y limita a 3", async () => {
     fromMock.mockImplementation((table: string) => {
       if (table === "categories") {
@@ -350,9 +319,7 @@ describe("posts lib", () => {
         };
       }
     });
-
-    const result = await getRelatedPosts("tech", "p1");
-    expect(result).toEqual([]);
+    await expect(getRelatedPosts("tech", "p1")).rejects.toThrow("fail");
   });
 
   it("getPostBySlug devuelve post con categoría vacía si no encuentra match", async () => {
@@ -409,8 +376,7 @@ describe("posts lib", () => {
       }
     });
 
-    const result = await getPostsByCategory("tech");
-    expect(result).toEqual([]);
+    await expect(getPostsByCategory("tech")).rejects.toThrow("fail");
   });
 
   it("searchPosts devuelve post con categoría vacía si no encuentra match", async () => {
@@ -496,10 +462,6 @@ describe("posts lib", () => {
     });
 
     await expect(getCategories()).rejects.toEqual(
-      expect.objectContaining({ message: "fail cats" }),
-    );
-
-    expect(Sentry.captureException).toHaveBeenCalledWith(
       expect.objectContaining({ message: "fail cats" }),
     );
   });

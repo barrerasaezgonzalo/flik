@@ -1,40 +1,53 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getPosts } from "@/lib/posts";
-import { getCommentsByPostId } from "@/lib/comments";
 import { getPaginatedItems } from "@/lib/utils";
 import PostListItem from "@/components/PostListItem";
-import Image from "next/image";
-import { Post } from "@/types";
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  SITE_OG_IMAGE,
+} from "@/lib/constants";
 
 const PAGE_SIZE = 10;
 
-export const metadata: Metadata = {
-  title: "Todos los posts | Blog de tecnología en español",
-  description:
-    "Listado completo de artículos y publicaciones en Flik, blog de tecnología en español.",
+export const metadata = {
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   alternates: {
-    canonical: "https://flik.cl/",
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: "Flik",
+    images: [
+      {
+        url: SITE_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: SITE_TITLE,
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [SITE_OG_IMAGE],
   },
 };
 
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams?: { page?: string } | Promise<{ page?: string }>;
+  searchParams?: { page?: string };
 }) {
-  let params: { page?: string } | undefined = searchParams as
-    | { page?: string }
-    | undefined;
-  if (
-    searchParams &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    typeof (searchParams as Promise<any>).then === "function"
-  ) {
-    params = (await searchParams) as { page?: string };
-  }
-  const rawPage = params?.page;
+  const rawPage = searchParams?.page;
   const page = rawPage && /^\d+$/.test(rawPage) ? parseInt(rawPage, 10) : 1;
 
   const posts = await getPosts();
@@ -44,23 +57,17 @@ export default async function HomePage({
     PAGE_SIZE,
   );
 
-  // 🚨 Validación de parámetros inválidos
-  if (
-    (rawPage && !/^\d+$/.test(rawPage)) || // ej: ?page=a
-    page < 1 ||
-    page > totalPages
-  ) {
+  if ((rawPage && !/^\d+$/.test(rawPage)) || page < 1 || page > totalPages) {
     notFound();
   }
 
-   return (
+  return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold text-gray-900 mb-8 border-b pb-4">
-        Blog de tecnología en español
+        {SITE_TITLE}
       </h1>
 
-      {/* Anuncio superior */}
-      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
+      <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
         <Link href="/mapa?modo=categorias">
           <Image
             src="/ads/categorias-destacadas.png"
@@ -68,24 +75,21 @@ export default async function HomePage({
             width={900}
             height={185}
             quality={75}
-            sizes="100vw"
-            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
+            className="w-full h-auto object-cover rounded transition-transform hover:scale-105"
           />
         </Link>
       </div>
 
-      {/* Posts */}
       <div className="space-y-8">
-        {visiblePosts.map((post, index) => (
+        {visiblePosts.map((post, i) => (
           <PostListItem
             key={post.slug}
             post={post}
-            fetchpriority={index === 0 ? "high" : "low"}
+            fetchpriority={i === 0 ? "high" : "low"}
           />
         ))}
       </div>
 
-      {/* Controles de paginación */}
       <div className="flex justify-center items-center gap-2 mt-10">
         {page > 1 && (
           <Link
@@ -95,7 +99,6 @@ export default async function HomePage({
             ←
           </Link>
         )}
-
         {Array.from({ length: totalPages }).map((_, i) => (
           <Link
             key={i}
@@ -107,7 +110,6 @@ export default async function HomePage({
             {i + 1}
           </Link>
         ))}
-
         {page < totalPages && (
           <Link
             href={`/?page=${page + 1}`}
@@ -118,17 +120,15 @@ export default async function HomePage({
         )}
       </div>
 
-      {/* Anuncio inferior */}
       <div className="bg-gray-100 p-4 my-8 text-center border border-dashed rounded-lg">
         <Link href="/contact">
           <Image
             src="/ads/publica.png"
-            alt="¿Quieres colabrar o proponer un tema?, escríbenos"
+            alt="¿Quieres colaborar o proponer un tema?, escríbenos"
             width={900}
             height={185}
             quality={75}
-            sizes="100vw"
-            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
+            className="w-full h-auto object-cover rounded transition-transform hover:scale-105"
           />
         </Link>
       </div>

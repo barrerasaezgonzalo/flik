@@ -1,18 +1,52 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getPostsByCategory } from "@/lib/posts";
-import { getCommentsByPostId } from "@/lib/comments";
-import { getPaginatedItems } from "@/lib/utils";
 import PostListItem from "@/components/PostListItem";
 import { Post } from "@/types";
 import { supabase } from "@/lib/supabaseClient";
 import React from "react";
+import { SITE_TITLE } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const PAGE_SIZE = 15;
+
+/* =====================
+    FUNCIONES SERVER
+   ===================== */
+
+// Trae todos los posts por categoría (ordenados por fecha desc)
+async function getPostsByCategory(categorySlug: string): Promise<Post[]> {
+  const { data, error } = await supabase
+    .from("posts")
+    .select(
+      `id, title, slug, excerpt, image, date, created_at,
+      category:categories(name, slug),
+      post_tags(tags(name, slug))`,
+    )
+    .eq("category.slug", categorySlug)
+    .order("date", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching posts by category:", error);
+    return [];
+  }
+
+  return data as unknown as Post[];
+}
+
+// Paginar resultados localmente
+function getPaginatedItems<T>(items: T[], page: number, pageSize: number) {
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  const totalPages = Math.ceil(items.length / pageSize);
+  return { items: items.slice(start, end), totalPages };
+}
+
+/* =====================
+    METADATA DINÁMICA
+   ===================== */
 
 export async function generateMetadata({
   params,
@@ -22,7 +56,6 @@ export async function generateMetadata({
   let resolvedParams: { category: string } | undefined = params as
     | { category: string }
     | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (params && typeof (params as Promise<any>).then === "function") {
     resolvedParams = (await params) as { category: string };
   }
@@ -36,77 +69,60 @@ export async function generateMetadata({
 
   if (!category) {
     return {
-      title: "Categoría no encontrada | Blog de tecnología en español",
+      title: `Categoría no encontrada |  ${SITE_TITLE}`,
       description: "Esta categoría no existe en Flik.",
-      openGraph: {
-        title: "Categoría no encontrada | Blog de tecnología en español",
-        description: "Esta categoría no existe en Flik.",
-        url: `https://flik.cl/categories/${categorySlug}`,
-        siteName: "Flik Blog",
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: "Categoría no encontrada | Blog de tecnología en español",
-        description: "Esta categoría no existe en Flik.",
-      },
     };
   }
 
   return {
-    title: `${category.name} | Blog de tecnología en español`,
+    title: `${category.name} | ${SITE_TITLE}`,
     description: `Artículos sobre ${category.name} en Flik.`,
-    alternates: {
-      canonical: `https://flik.cl/categories/${category.slug}`,
-    },
+    alternates: { canonical: `https://flik.cl/categories/${category.slug}` },
     openGraph: {
-      title: `${category.name} | Blog de tecnología en español`,
+      title: `${category.name} |  ${SITE_TITLE}`,
       description: `Artículos sobre ${category.name} en Flik.`,
       url: `https://flik.cl/categories/${category.slug}`,
       siteName: "Flik Blog",
       images: [
-        {
-          url: "https://flik.cl/og_logo.png",
-          width: 1200,
-          height: 630,
-          alt: "Flik Blog",
-        },
+        { url: "https://flik.cl/og_logo.png", width: 1200, height: 630 },
       ],
-      locale: "es_CL",
-      type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${category.name} | Blog de tecnología en español`,
+      title: `${category.name} |  ${SITE_TITLE}`,
       description: `Artículos sobre ${category.name} en Flik.`,
       images: ["https://flik.cl/og_logo.png"],
     },
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* =====================
+    PAGE COMPONENT
+   ===================== */
+
 export default async function CategoryPage(props: any) {
   let params: { category: string } | undefined = props.params as
     | { category: string }
     | undefined;
   if (
     props.params &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (props.params as Promise<any>).then === "function"
   ) {
     params = (await props.params) as { category: string };
   }
+
   const categorySlug = params?.category;
   let searchParams: { page?: string } | undefined = props.searchParams as
     | { page?: string }
     | undefined;
+
   if (
     props.searchParams &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (props.searchParams as Promise<any>).then === "function"
   ) {
     searchParams = (await props.searchParams) as { page?: string };
   }
+
   const page = parseInt(searchParams?.page || "1", 10);
 
   const { data: category, error } = await supabase
@@ -120,24 +136,11 @@ export default async function CategoryPage(props: any) {
     return <div>Categoría no encontrada</div>;
   }
 
-  if (!categorySlug) {
-    return <div>Categoría no encontrada</div>;
-  }
-  const posts = await getPostsByCategory(categorySlug);
-
+  const posts = await getPostsByCategory(categorySlug ?? "");
   const { items: paginatedPosts, totalPages } = getPaginatedItems(
     posts,
     page,
     PAGE_SIZE,
-  );
-  const commentCounts: Record<string, number> = {};
-
-  // Get comment counts for all visible posts
-  await Promise.all(
-    paginatedPosts.map(async (post: Post) => {
-      const comments = await getCommentsByPostId(post.id);
-      commentCounts[post.id] = Array.isArray(comments) ? comments.length : 0;
-    }),
   );
 
   return (
@@ -169,16 +172,11 @@ export default async function CategoryPage(props: any) {
       ) : (
         <div className="space-y-8">
           {paginatedPosts.map((post: Post) => (
-            <PostListItem
-              key={post.slug}
-              post={post}
-              commentCount={commentCounts[post.id] || 0}
-            />
+            <PostListItem key={post.slug} post={post} />
           ))}
         </div>
       )}
 
-      {/* Controles de paginación */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-2 mt-10">
           {page > 1 && (
@@ -212,20 +210,6 @@ export default async function CategoryPage(props: any) {
           )}
         </div>
       )}
-
-      {/* <div className="bg-gray-100 p-4 my-8 text-center border border-dashed  rounded-lg">
-        <Link href="https://mpago.li/1yh1MCv" target="_blank">
-          <Image
-            src="/ads/mercadopago.png"
-            alt="Mercadopago - Gana Rendimientos diarios con la plata en tu app"
-            width={900}
-            height={185}
-            quality={75}
-            sizes="100vw"
-            className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105 rounded"
-          />
-        </Link>
-      </div> */}
     </div>
   );
 }

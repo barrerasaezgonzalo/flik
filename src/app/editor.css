@@ -1,69 +1,31 @@
-/* ====== Editor ====== */
-.ProseMirror {
-  min-height: 200px;
-  cursor: text;
+pre,
+code {
+  background-color: #f5f2f0;
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: monospace;
+  color: #8a1212 !important;
 }
 
-.ProseMirror-focused {
-  @apply outline-none ring-0;
-}
-
-.ProseMirror p:empty::after {
-  content: " ";
-  display: block;
-  height: 1rem;
-}
-
-/* ====== Texto común ====== */
-.ProseMirror p,
-.ProseMirror pre,
-.ProseMirror blockquote,
-.ProseMirror ul,
-.ProseMirror ol {
-  @apply my-3;
-}
-.ProseMirror > *:first-child {
-  @apply mt-0;
-}
-.ProseMirror > *:last-child {
-  @apply mb-0;
-}
-
-/* ====== Links ====== */
-.ProseMirror a,
-.prose a {
-  @apply text-green-600 underline;
-  cursor: pointer;
-}
-.ProseMirror a:hover,
-.prose a:hover {
-  @apply text-green-700;
-}
-
-/* ====== Headings ====== */
-.ProseMirror h2,
-.prose h2 {
-  font-size: 1.5rem; /* 24px */
-  font-weight: bold;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-/* ====== Código ====== */
-.ProseMirror pre,
-.prose pre {
-  @apply bg-gray-900 text-green-200 p-3 rounded-md font-mono text-sm overflow-x-auto my-2;
-}
-.ProseMirror code,
-.prose code {
-  @apply text-yellow-500 font-mono text-sm;
-}
-
-/* ====== Imágenes ====== */
-.ProseMirror img,
-.prose img {
-  max-width: 100%;
-  height: auto;
+.prose pre[class*="language-javascript"] {
+  background-color: #f5f2f0;
+  color: #8a1212 !important;
+  padding: 1rem;
   border-radius: 0.5rem;
-  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  /* separa los párrafos */
+}
+
+.prose pre {
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  margin: 10px 0;
 }

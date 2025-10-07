@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./editor.css";
+@import "prismjs/themes/prism-tomorrow.css";
 
 :root {
   --background: #ffffff;

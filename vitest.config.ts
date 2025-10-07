@@ -11,13 +11,7 @@ export default defineConfig({
     // 👇 Solo incluye tests dentro de src/
     include: ["src/**/*.{test,spec}.{js,ts,jsx,tsx}"],
     // 👇 Excluye e2e explícitamente de la ejecución
-    exclude: [
-      "e2e/**",
-      "node_modules/**",
-      ".next/**",
-      "coverage/**",
-      "public/**",
-    ],
+    exclude: ["node_modules/**", ".next/**", "coverage/**", "public/**"],
     coverage: {
       include: [
         "src/lib/**/*.{ts,tsx}",
@@ -34,9 +28,7 @@ export default defineConfig({
         "postcss.config.mjs",
         "tailwind.config.ts",
         "vitest.config.ts",
-        "e2e/**",
         "src/app/admin/**/*.{ts,tsx}",
-        "src/app/global-error.tsx",
       ],
       provider: "v8",
       reporter: ["text", "html"],

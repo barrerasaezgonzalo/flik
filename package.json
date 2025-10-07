@@ -11,15 +11,12 @@
     "check:types": "tsc --noEmit",
     "test": "vitest",
     "test:ci": "vitest run --coverage --coverage.threshold=80",
-    "test:coverage": "vitest --coverage",
-    "test:e2e": "cross-env NODE_ENV=test dotenv -e .env.local -- playwright test",
-    "test:e2e:headed": "cross-env NODE_ENV=test dotenv -e .env.local -- playwright test --headed",
-    "test:e2e:debug": "cross-env NODE_ENV=test dotenv -e .env.local -- playwright test --debug"
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
-    "@sentry/nextjs": "^10.13.0",
     "@supabase/supabase-js": "^2.57.4",
     "@tailwindcss/typography": "^0.5.16",
+    "@tinymce/tinymce-react": "^6.3.0",
     "@tiptap/core": "^2.26.2",
     "@tiptap/extension-code": "^2.26.2",
     "@tiptap/extension-code-block": "^2.26.2",
@@ -32,6 +29,7 @@
     "lowlight": "^3.3.0",
     "lucide-react": "^0.544.0",
     "next": "^15.5.3",
+    "prismjs": "^1.30.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
@@ -40,7 +38,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@playwright/test": "^1.55.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",

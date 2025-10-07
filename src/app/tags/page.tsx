@@ -2,14 +2,15 @@ import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { SITE_TITLE } from "@/lib/constants";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Explora temas por etiquetas | Flik",
+    title: "Explora temas por etiquetas | " + SITE_TITLE,
     description:
       "Descubre todos los artículos organizados por etiquetas en Flik. Encuentra posts sobre React, Next.js, JavaScript, Supabase y más.",
     openGraph: {
-      title: "Explora temas por etiquetas | Flik",
+      title: "Explora temas por etiquetas | " + SITE_TITLE,
       description:
         "Listado de etiquetas de Flik para navegar fácilmente por categorías de tecnología y programación.",
       url: "https://flik.cl/tags",

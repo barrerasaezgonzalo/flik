@@ -1,8 +1,8 @@
+import { SITE_TITLE } from "@/lib/constants";
 import React from "react";
 export const metadata = {
-  title: "Términos y Condiciones | Blog de tecnología en español",
-  description:
-    "Consulta los términos y condiciones de uso de Flik, un blog de tecnología en español.",
+  title: "Términos y Condiciones | " + SITE_TITLE,
+  description: "Consulta los términos y condiciones de uso de " + SITE_TITLE,
 };
 
 export default function TerminosPage() {

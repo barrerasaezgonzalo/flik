@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import React from "react";
+import { SITE_TITLE } from "@/lib/constants";
 
 // 🔹 Metadata condicional
 export async function generateMetadata({
@@ -24,12 +25,12 @@ export async function generateMetadata({
   const isCategorias = params?.modo === "categorias";
 
   const pageTitle = isCategorias
-    ? "Categorías | Blog de tecnología en español"
-    : "Mapa del sitio | Blog de tecnología en español";
+    ? "Categorías | " + SITE_TITLE
+    : "Mapa del sitio | " + SITE_TITLE;
 
   const pageDesc = isCategorias
-    ? "Explora todas las categorías de Flik. Blog de tecnología en español."
-    : "Encuentra todos los artículos y categorías en Flik. Blog de tecnología en español.";
+    ? "Explora todas las categorías de Flik. " + SITE_TITLE
+    : "Encuentra todos los artículos y categorías en " + SITE_TITLE;
 
   return {
     title: pageTitle,
@@ -40,13 +41,13 @@ export async function generateMetadata({
       url: isCategorias
         ? "https://flik.cl/mapa?modo=categorias"
         : "https://flik.cl/mapa",
-      siteName: "Flik Blog",
+      siteName: SITE_TITLE,
       images: [
         {
           url: "https://flik.cl/og_logo.png",
           width: 1200,
           height: 630,
-          alt: "Flik Blog",
+          alt: SITE_TITLE,
         },
       ],
       locale: "es_CL",
@@ -66,9 +67,7 @@ function TituloClient({ modo }: { modo?: string }) {
   "use client";
   return (
     <h1 className="text-4xl font-bold mb-8 border-b pb-4">
-      {modo === "categorias"
-        ? "Blog de tecnología en español"
-        : "Mapa del sitio"}
+      {modo === "categorias" ? SITE_TITLE : "Mapa del sitio"}
     </h1>
   );
 }

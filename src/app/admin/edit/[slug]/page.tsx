@@ -3,7 +3,11 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import MiniEditor from "@/components/MiniEditor";
+import dynamic from "next/dynamic";
+
+const MiniEditor = dynamic(() => import("@/components/MiniEditor"), {
+  ssr: false,
+});
 
 export default function EditPostPage({
   params,
@@ -144,7 +148,7 @@ export default function EditPostPage({
   if (loading) return <div className="p-10 text-center">Cargando...</div>;
 
   return (
-    <div className="max-w-2xl mx-auto py-10">
+    <div className="max-w-4xl mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">Editar publicación</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <label

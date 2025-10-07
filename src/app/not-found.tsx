@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { SITE_TITLE } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Página no encontrada | Blog de tecnología en español",
+  title: "Página no encontrada | " + SITE_TITLE,
   description:
     "La página que buscas no existe en Flik. Explora otros artículos y categorías en nuestro blog de tecnología en español.",
   robots: {
