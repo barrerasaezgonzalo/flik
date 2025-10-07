@@ -9,9 +9,9 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/(.*)",
+        source: "/:path*",
         has: [{ type: "host", value: "flik.cl" }],
-        destination: "https://www.flik.cl/:1",
+        destination: "https://www.flik.cl/:path*",
         permanent: true,
       },
     ];
