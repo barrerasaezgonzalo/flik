@@ -6,6 +6,16 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/(.*)",
+        has: [{ type: "host", value: "flik.cl" }],
+        destination: "https://www.flik.cl/:1",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
